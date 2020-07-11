@@ -6,7 +6,7 @@ using UnityEngine.Events;
 namespace UI {
 	public class JoinEvent : UnityEvent<string> {}
 	
-	public class GameJoinerInterface : MonoBehaviour {
+	public class GameJoinerGUI : MonoBehaviour {
 		[SerializeField] private TextMeshProUGUI gameNameText;
 		[SerializeField] private TextMeshProUGUI countText;
 		
@@ -17,13 +17,13 @@ namespace UI {
 		public void Initialize(GameContainer game) {
 			_game = game;
 			gameNameText.text = _game.gameName;
-			UpdateInterface();
+			UpdateGUI();
 		}
 
 		public void UpdatePlayerCount(GameStatusMsg gameStatus) {
 			_game.currentPlayers = gameStatus.currentPlayers;
 			_game.hasStarted = gameStatus.hasStarted;
-			UpdateInterface();
+			UpdateGUI();
 		}
 
 		public bool Is(string uniqueId) {
@@ -34,7 +34,7 @@ namespace UI {
 			joinEvent?.Invoke(_game.uniqueId);
 		}
 
-		private void UpdateInterface() {
+		private void UpdateGUI() {
 			countText.text = $"{_game.currentPlayers} / {_game.minPlayers}";
 			gameObject.SetActive(!_game.hasStarted && _game.currentPlayers < _game.maxPlayers);
 		}

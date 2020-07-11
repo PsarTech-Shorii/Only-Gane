@@ -2,5 +2,5 @@ using Common.Tracker;
 using UnityEngine;
 
 namespace ScriptableObjects {
-	[CreateAssetMenu(menuName = "Primitive/Boolean")] public class SO_Boolean : SO_Tracked<bool> {}
+	[CreateAssetMenu(menuName = "Primitive/Boolean")] public class SO_Boolean : SO_TrackedBase<bool> {}
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Insight;
-using Mirror;
 using ScriptableObjects;
 using TMPro;
 using UnityEngine;
@@ -10,7 +9,7 @@ using Button = UnityEngine.UI.Button;
 using Slider = UnityEngine.UI.Slider;
 
 namespace UI {
-	public class MatchInterface : MonoBehaviour {
+	public class MatchGUI : MonoBehaviour {
 		private readonly List<GameObject> _gameJoiners = new List<GameObject>();
 
 		private ClientGameManager _clientGameManager;
@@ -19,6 +18,7 @@ namespace UI {
 		[Header("Module")]
 		[SerializeField] private SO_Behaviour clientGameManagerRef;
 		[SerializeField] private SO_Behaviour clientMatchMakerRef;
+		[SerializeField] private SO_Integer maxPlayers;
 
 		[Header("Prefabs")]
 		[SerializeField] private GameObject gameJoinerPrefabs;
@@ -38,10 +38,12 @@ namespace UI {
 
 			_clientMatchMaker = (ClientMatchMaker) clientMatchMakerRef.Data;
 			Assert.IsNotNull(_clientMatchMaker);
+			
+			Assert.AreNotEqual(0, maxPlayers.Data);
 		}
 
 		private void Start() {
-			playerCountSlider.maxValue = NetworkManager.singleton.maxConnections;
+			playerCountSlider.maxValue = maxPlayers.Data;
 			
 			RegisterHandlers();
 
@@ -91,7 +93,7 @@ namespace UI {
 			switch (message.operation) {
 				case GameListStatusMsg.Operation.Add: {
 					var gameJoinerObject = Instantiate(gameJoinerPrefabs, gameJoinerParent);
-					var gameJoiner = gameJoinerObject.GetComponent<GameJoinerInterface>();
+					var gameJoiner = gameJoinerObject.GetComponent<GameJoinerGUI>();
 					gameJoiner.Initialize(message.game);
 					gameJoiner.joinEvent.AddListener(_clientGameManager.JoinGame);
 					_gameJoiners.Add(gameJoinerObject);
@@ -99,16 +101,16 @@ namespace UI {
 				}
 				case GameListStatusMsg.Operation.Remove: {
 					var gameJoinerObject = _gameJoiners.Find(e =>
-						e.GetComponent<GameJoinerInterface>().Is(message.game.uniqueId));
+						e.GetComponent<GameJoinerGUI>().Is(message.game.uniqueId));
 					Destroy(gameJoinerObject);
 					_gameJoiners.Remove(gameJoinerObject);
 					break;
 				}
 				case GameListStatusMsg.Operation.Update: {
 					var gameJoinerObject = _gameJoiners.Find(e =>
-						e.GetComponent<GameJoinerInterface>().Is(message.game.uniqueId));
+						e.GetComponent<GameJoinerGUI>().Is(message.game.uniqueId));
 					
-					gameJoinerObject.GetComponent<GameJoinerInterface>().UpdatePlayerCount(new GameStatusMsg {
+					gameJoinerObject.GetComponent<GameJoinerGUI>().UpdatePlayerCount(new GameStatusMsg {
 							currentPlayers = message.game.currentPlayers,
 							hasStarted = message.game.hasStarted
 						}
@@ -137,7 +139,7 @@ namespace UI {
 
 			foreach (var game in games) {
 				var gameJoinerObject = Instantiate(gameJoinerPrefabs, gameJoinerParent);
-				var gameJoiner = gameJoinerObject.GetComponent<GameJoinerInterface>();
+				var gameJoiner = gameJoinerObject.GetComponent<GameJoinerGUI>();
 				gameJoiner.Initialize(game);
 				gameJoiner.joinEvent.AddListener(_clientGameManager.JoinGame);
 				_gameJoiners.Add(gameJoinerObject);

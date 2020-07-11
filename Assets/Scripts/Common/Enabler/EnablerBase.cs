@@ -1,8 +1,8 @@
 using ScriptableObjects;
 using UnityEngine;
 
-namespace Common.EnablerManager {
-	public abstract class Enabler : MonoBehaviour {
+namespace Common.Enabler {
+	public abstract class EnablerBase : MonoBehaviour {
 		[SerializeField] protected SO_Boolean enabler;
 		[SerializeField] protected bool enable = true;
 

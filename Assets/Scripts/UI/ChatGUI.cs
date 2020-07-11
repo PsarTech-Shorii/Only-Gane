@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace UI {
-	public class ChatInterface : MonoBehaviour {
+	public class ChatGUI : MonoBehaviour {
 		private ChatClient _chatClient;
 		
 		[Header("Module")]

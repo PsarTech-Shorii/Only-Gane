@@ -39,6 +39,8 @@ namespace Insight {
 		private void RegisterHandlers() {
 			_client.transport.OnClientConnected.AddListener(RegisterPlayer);
 			_client.transport.OnClientConnected.AddListener(GetGameList);
+			
+			_client.transport.OnClientDisconnected.AddListener(HandleDisconnect);
 
 			_client.RegisterHandler<ChangeServerMsg>(HandleChangeServersMsg);
 			_client.RegisterHandler<GameListStatusMsg>(HandleGameListStatutMsg);
@@ -46,6 +48,12 @@ namespace Insight {
 
 		#region Handler
 
+		private void HandleDisconnect() {
+			uniqueId = null;
+			gamesList.Clear();
+			IsInGame = false;
+		}
+		
 		private void HandleChangeServersMsg(InsightMessage insightMsg) {
 			Debug.Log("[Client - GameManager] - Connection to GameServer" +
 			          (insightMsg.status == CallbackStatus.Default ? "" : $" : {insightMsg.status}"));

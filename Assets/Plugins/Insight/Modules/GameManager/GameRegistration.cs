@@ -41,6 +41,9 @@ namespace Insight {
 
 		private void RegisterHandlers() {
 			_client.transport.OnClientConnected.AddListener(RegisterGame);
+			
+			_client.transport.OnClientDisconnected.AddListener(Application.Quit);
+			
 			_transport.OnServerConnected.AddListener(GameUpdate);
 			_transport.OnServerDisconnected.AddListener(GameUpdate);
 		}

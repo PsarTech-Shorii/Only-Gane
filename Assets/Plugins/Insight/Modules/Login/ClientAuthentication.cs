@@ -7,8 +7,8 @@ namespace Insight {
 		public delegate void Login(bool newValue);
 		
 		private InsightClient _client;
-		private string _uniqueId;
 		
+		private string _uniqueId;
 		private bool _isLogin;
 		
 		public event Login OnLogin;
@@ -28,8 +28,15 @@ namespace Insight {
 			RegisterHandlers();
 		}
 
-		private void RegisterHandlers() {}
+		private void RegisterHandlers() {
+			_client.transport.OnClientDisconnected.AddListener(HandleDisconnect);
+		}
 
+		private void HandleDisconnect() {
+			_uniqueId = null;
+			IsLogin = false;
+		}
+		
 		public void SendLoginMsg(LoginMsg message) {
 			Assert.IsFalse(IsLogin);
 			Assert.IsTrue(_client.IsConnected);

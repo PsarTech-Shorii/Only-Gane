@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace UI {
-	public class LoginInterface : MonoBehaviour {
+	public class LoginGUI : MonoBehaviour {
 		private ClientAuthentication _clientAuthentication;
 		
 		[Header("Module")]

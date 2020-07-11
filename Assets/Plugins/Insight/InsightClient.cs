@@ -9,6 +9,7 @@ namespace Insight {
 		private int _serverConnId;
 
 		private IEnumerator _reconnectCor;
+		private bool _toReconnect;
 
 		public bool autoReconnect = true;
 		public float reconnectDelayInSeconds = 5f;
@@ -23,31 +24,28 @@ namespace Insight {
 		public override void StartInsight() {
 			transport.ClientConnect(networkAddress);
 
-			if(_reconnectCor != null) {
-				StopCoroutine(_reconnectCor);
-				_reconnectCor = null;
-			}
-			_reconnectCor = ReconnectCor();
-			StartCoroutine(_reconnectCor);
+			_toReconnect = true;
+			StartReconnect();
 		}
 
 		public override void StopInsight() {
 			transport.ClientDisconnect();
+
+			_toReconnect = false;
 		}
 
 		private void OnConnected() {
 			Debug.Log($"[InsightClient] - Connecting to Insight Server: {networkAddress}");
 			
-			if(_reconnectCor != null) {
-				StopCoroutine(_reconnectCor);
-				_reconnectCor = null;
-			}
+			StopReconnect();
 			connectState = ConnectState.Connected;
 		}
 
 		private void OnDisconnected() {
 			Debug.Log("[InsightClient] - Disconnecting from Insight Server");
+			
 			connectState = ConnectState.Disconnected;
+			if(_toReconnect) StartReconnect();
 		}
 
 		private void HandleData(ArraySegment<byte> data, int channelId) {
@@ -94,6 +92,25 @@ namespace Insight {
 			}
 		}
 
+		private void StartReconnect() {
+			if (autoReconnect) {
+				if (_reconnectCor != null) {
+					StopCoroutine(_reconnectCor);
+					_reconnectCor = null;
+				}
+
+				_reconnectCor = ReconnectCor();
+				StartCoroutine(_reconnectCor);
+			}
+		}
+
+		private void StopReconnect() {
+			if(_reconnectCor != null) {
+				StopCoroutine(_reconnectCor);
+				_reconnectCor = null;
+			}
+		}
+		
 		private IEnumerator ReconnectCor() {
 			Assert.IsTrue(autoReconnect);
 			Assert.IsFalse(IsConnected);

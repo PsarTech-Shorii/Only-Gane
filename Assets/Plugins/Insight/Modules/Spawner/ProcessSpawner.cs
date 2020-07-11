@@ -9,9 +9,9 @@ namespace Insight {
 	public class ProcessSpawner : InsightModule {
 		private InsightServer _server;
 		private InsightClient _client;
-		private RunningProcessContainer[] _spawnerProcesses;
-		private bool _registrationComplete;
+
 		private string _uniqueId;
+		private RunningProcessContainer[] _spawnerProcesses;
 
 		private const string Space = " ";
 
@@ -36,6 +36,7 @@ namespace Insight {
 			Debug.Log("[Server - ProcessSpawner] - Initialization");
 			
 			RegisterHandlers();
+			RegisterSpawner();
 		}
 
 		public override void Initialize(InsightClient client, ModuleManager manager) {
@@ -64,15 +65,22 @@ namespace Insight {
 			if (_client) {
 				_client.transport.OnClientConnected.AddListener(RegisterSpawner);
 				
+				_client.transport.OnClientDisconnected.AddListener(HandleDisconnect);
+				
 				_client.RegisterHandler<RequestSpawnStartToSpawnerMsg>(HandleRequestSpawnStart);
 				_client.RegisterHandler<KillSpawnMsg>(HandleKillSpawn);
 			}
 
 			if (_server) {
-				RegisterSpawner();
-				
 				_server.RegisterHandler<RequestSpawnStartToSpawnerMsg>(HandleRequestSpawnStart);
 				_server.RegisterHandler<KillSpawnMsg>(HandleKillSpawn);
+			}
+		}
+
+		private void HandleDisconnect() {
+			_uniqueId = null;
+			foreach (var runningProcess in _spawnerProcesses) {
+				runningProcess.process.Kill();
 			}
 		}
 
@@ -162,10 +170,7 @@ namespace Insight {
 		private void HandleKillSpawn(InsightMessage insightMsg) {
 			var message = (KillSpawnMsg) insightMsg.message;
 
-			var spawner = _spawnerProcesses.First(e => e.uniqueId == message.uniqueId);
-			spawner.process.Kill();
-			spawner.process = null;
-			spawner.uniqueId = "";
+			_spawnerProcesses.First(e => e.uniqueId == message.uniqueId).process.Kill();
 		}
 
         private void RegisterSpawner() {

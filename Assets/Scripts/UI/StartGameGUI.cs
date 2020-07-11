@@ -2,7 +2,7 @@ using ScriptableObjects;
 using UnityEngine;
 
 namespace UI {
-	public class StartGameInterface : MonoBehaviour {
+	public class StartGameGUI : MonoBehaviour {
 		[SerializeField] private SO_Boolean hasStartedGame;
 
 		public void StartGame() {

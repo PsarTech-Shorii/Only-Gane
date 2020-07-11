@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace Common.Tracker {
-	public abstract class SO_Tracked<T> : ScriptableObject {
+	public abstract class SO_TrackedBase<T> : ScriptableObject {
 		private readonly ObjectTracked<T> _object = new ObjectTracked<T>();
 
 		public T Data {

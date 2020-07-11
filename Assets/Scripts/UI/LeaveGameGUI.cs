@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace UI {
-	public class LeaveGameInterface : MonoBehaviour {
+	public class LeaveGameGUI : MonoBehaviour {
 		private ClientGameManager _clientGameManager;
 		
 		[Header("Module")]

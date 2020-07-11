@@ -52,7 +52,7 @@ namespace Insight {
 				transport = GetComponent<Transport>();
 				if (transport == null) {
 					transport = gameObject.AddComponent<TelepathyTransport>();
-					Debug.Log("NetworkManager: added default Transport because there was none yet.");
+					Debug.Log("InsightCommon: added default Transport because there was none yet.");
 				}
 #if UNITY_EDITOR
 				UnityEditor.Undo.RecordObject(gameObject, "Added default Transport");

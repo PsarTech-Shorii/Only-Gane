@@ -1,7 +1,7 @@
 using UnityEngine;
 
-namespace Common.EnablerManager {
-	public class InteractionEnabler : Enabler {
+namespace Common.Enabler {
+	public class InteractionEnabler : EnablerBase {
 		[SerializeField] private CanvasGroup canvasGroup;
 
 		protected override void CheckEnable(bool newEnable) {
