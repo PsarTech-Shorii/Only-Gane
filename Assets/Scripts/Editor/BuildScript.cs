@@ -58,7 +58,8 @@ namespace Editor {
 			string[] scenes = {
 				Settings.ScenesRoot + "PlayerClient.unity",
 				Settings.ScenesRoot + "Lobby.unity",
-				Settings.ScenesRoot + "Game.unity"
+				Settings.ScenesRoot + "Game.unity",
+				Settings.ScenesRoot + "GameGUI.unity"
 			};
 			PlayerSettings.productName = "PlayerClient";
 			BuildPipeline.BuildPlayer(scenes, Settings.BuildPath + "PlayerClient/PlayerClient" + 

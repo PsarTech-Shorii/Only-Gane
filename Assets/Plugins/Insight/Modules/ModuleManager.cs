@@ -27,16 +27,6 @@ namespace Insight {
 				_tempAutoStartValue = _client.autoStart;
 				_client.autoStart = false; //Wait until modules are loaded to AutoStart
 			}
-			
-			/*// Disable while waiting for modules to load
-			if (_server) {
-				Debug.Log("[ModuleManager] - Disable Insight server");
-				_server.enabled = false;
-			}
-			if (_client) {
-				Debug.Log("[ModuleManager] - Disable Insight client");
-				_client.enabled = false;
-			}*/
 		}
 
 		private void Update() {
@@ -59,16 +49,6 @@ namespace Insight {
 					_client.autoStart = _tempAutoStartValue;
 					_client.StartInsight();
 				}
-				
-				/*// Enable now that the modules are loaded
-				if (_server) {
-					Debug.Log("[ModuleManager] - Enable Insight server");
-					_server.enabled = true;
-				}
-				if (_client) {
-					Debug.Log("[ModuleManager] - Enable Insight client");
-					_client.enabled = true;
-				}*/
 			}
 		}
 

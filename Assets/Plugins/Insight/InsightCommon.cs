@@ -23,7 +23,7 @@ namespace Insight {
 	public delegate void CallbackHandler(InsightMessage insightMsg);
 
 	public abstract class InsightCommon : MonoBehaviour {
-		private class CallbackData {
+		private struct CallbackData {
 			public CallbackHandler callback;
 			public IEnumerator expirationCor;
 		}
