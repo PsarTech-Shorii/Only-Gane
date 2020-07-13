@@ -179,8 +179,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a734af2cfbc54531af76641e88acaa9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  behaviourRef: {fileID: 11400000, guid: 954ee9fa39cc19e2baa17b313cc01d36, type: 2}
-  behaviour: {fileID: 153207754}
+  objRef: {fileID: 11400000, guid: 954ee9fa39cc19e2baa17b313cc01d36, type: 2}
+  obj: {fileID: 153207754}
 --- !u!1 &351781152
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,8 +574,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a734af2cfbc54531af76641e88acaa9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  behaviourRef: {fileID: 11400000, guid: e3dbacf076c57e066a78089f00d83a1b, type: 2}
-  behaviour: {fileID: 1473695677}
+  objRef: {fileID: 11400000, guid: e3dbacf076c57e066a78089f00d83a1b, type: 2}
+  obj: {fileID: 1473695677}
 --- !u!1 &1496634315
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,8 +677,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a734af2cfbc54531af76641e88acaa9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  behaviourRef: {fileID: 11400000, guid: 1bfd71425d252d620ad7a5eb3e9be8fb, type: 2}
-  behaviour: {fileID: 1676022065}
+  objRef: {fileID: 11400000, guid: 1bfd71425d252d620ad7a5eb3e9be8fb, type: 2}
+  obj: {fileID: 1676022065}
 --- !u!114 &1676022067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -749,5 +749,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a734af2cfbc54531af76641e88acaa9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  behaviourRef: {fileID: 11400000, guid: 844e8907108ee4d3484e5452a9138918, type: 2}
-  behaviour: {fileID: 1998144609}
+  objRef: {fileID: 11400000, guid: 844e8907108ee4d3484e5452a9138918, type: 2}
+  obj: {fileID: 1998144609}

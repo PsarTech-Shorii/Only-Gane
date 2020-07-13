@@ -16,8 +16,8 @@ namespace UI {
 		private ClientMatchMaker _clientMatchMaker;
 
 		[Header("Module")]
-		[SerializeField] private SO_Behaviour clientGameManagerRef;
-		[SerializeField] private SO_Behaviour clientMatchMakerRef;
+		[SerializeField] private SO_Object clientGameManagerRef;
+		[SerializeField] private SO_Object clientMatchMakerRef;
 		[SerializeField] private SO_Integer maxPlayers;
 
 		[Header("Prefabs")]

@@ -9,7 +9,7 @@ namespace UI {
 		private ChatClient _chatClient;
 		
 		[Header("Module")]
-		[SerializeField] private SO_Behaviour chatClientRef;
+		[SerializeField] private SO_Object chatClientRef;
 		
 		[Header("Interface")]
 		[SerializeField] private TextMeshProUGUI chatLogText;

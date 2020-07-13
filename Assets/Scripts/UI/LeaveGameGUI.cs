@@ -8,7 +8,7 @@ namespace UI {
 		private ClientGameManager _clientGameManager;
 		
 		[Header("Module")]
-		[SerializeField] private SO_Behaviour clientGameManagerRef;
+		[SerializeField] private SO_Object clientGameManagerRef;
 
 		private void Awake() {
 			_clientGameManager = (ClientGameManager) clientGameManagerRef.Data;

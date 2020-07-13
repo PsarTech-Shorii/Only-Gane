@@ -9,7 +9,7 @@ namespace UI {
 		private ClientAuthentication _clientAuthentication;
 		
 		[Header("Module")]
-		[SerializeField] private SO_Behaviour clientAuthenticationRef;
+		[SerializeField] private SO_Object clientAuthenticationRef;
 
 		[Header("Interface")]
 		[SerializeField] private TextMeshProUGUI usernameText;
