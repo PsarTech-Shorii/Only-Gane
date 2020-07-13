@@ -11,14 +11,14 @@ namespace Insight {
 		public InsightNetworkMessage message;
 	}
 	
-	public class ServerGameManager : InsightModule {
+	public class GameMasterManager : InsightModule {
 		private InsightServer _server;
 
 		private readonly Dictionary<string, GameLauncher> _gameLaunchers = new Dictionary<string, GameLauncher>();
 		
-		public List<GameContainer> registeredGameServers = new List<GameContainer>();
-		public List<PlayerContainer> registeredPlayers = new List<PlayerContainer>();
-		public Dictionary<string, string> playersInGame = new Dictionary<string, string>(); //<string : playerUniqueId, string : gameUniqueId>
+		[HideInInspector] public List<GameContainer> registeredGameServers = new List<GameContainer>();
+		[HideInInspector] public List<PlayerContainer> registeredPlayers = new List<PlayerContainer>();
+		[HideInInspector] public Dictionary<string, string> playersInGame = new Dictionary<string, string>(); //<string : playerUniqueId, string : gameUniqueId>
 
 		public void Awake() {
 			AddDependency<MasterSpawner>();

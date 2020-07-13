@@ -4,19 +4,19 @@ namespace Insight {
 	public class ChatServer : InsightModule {
 		private InsightServer _server;
 		private ServerAuthentication _authModule;
-		private ServerGameManager _gameModule;
+		private GameMasterManager _gameModule;
 		
 
 		public void Awake() {
 			AddDependency<ServerAuthentication>();
-			AddOptionalDependency<ServerGameManager>();
+			AddOptionalDependency<GameMasterManager>();
 		}
 
 		public override void Initialize(InsightServer server, ModuleManager manager) {
 			_server = server;
 
 			_authModule = manager.GetModule<ServerAuthentication>();
-			_gameModule = manager.GetModule<ServerGameManager>();
+			_gameModule = manager.GetModule<GameMasterManager>();
 
 			RegisterHandlers();
 		}

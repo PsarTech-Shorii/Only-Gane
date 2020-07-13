@@ -4,16 +4,16 @@ using UnityEngine.Assertions;
 namespace Insight {
 	public class ServerMatchMaker : InsightModule {
 		private InsightServer _server;
-		private ServerGameManager _gameModule;
+		private GameMasterManager _gameModule;
 
 		private void Awake() {
-			AddDependency<ServerGameManager>();
+			AddDependency<GameMasterManager>();
 		}
 
 		public override void Initialize(InsightServer server, ModuleManager manager) {
 			_server = server;
 			
-			_gameModule = manager.GetModule<ServerGameManager>();
+			_gameModule = manager.GetModule<GameMasterManager>();
 			
 			RegisterHandlers();
 		}

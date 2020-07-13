@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Insight {
-	public class GameRegistration : InsightModule {
+	public class GameServerManager : InsightModule {
 		private InsightClient _client;
 		private Transport _transport;
 		private NetworkManager _netManager;
@@ -30,7 +30,7 @@ namespace Insight {
 			_transport = Transport.activeTransport;
 			_netManager = NetworkManager.singleton;
 
-			Debug.Log("[GameRegistration] - Initialization");
+			Debug.Log("[GameServerManager] - Initialization");
 
 			GatherCmdArgs();
 			RegisterHandlers();
@@ -87,7 +87,7 @@ namespace Insight {
 
 		private void RegisterGame() {
 			Assert.IsTrue(_client.IsConnected);
-			Debug.Log("[GameRegistration] - Registering game");
+			Debug.Log("[GameServerManager] - Registering game");
 			
 			_client.NetworkSend(new RegisterGameMsg {
 				uniqueId = _uniqueId,
@@ -114,7 +114,7 @@ namespace Insight {
 			_currentPlayers = NetworkServer.connections.Count;
 			
 			var startedText = _hasStarted ? "started" : "not started";
-			Debug.Log($"[GameRegistration] - Updating game : {_currentPlayers} players in the {startedText} game");
+			Debug.Log($"[GameServerManager] - Updating game : {_currentPlayers} players in the {startedText} game");
 			_client.NetworkSend(new GameStatusMsg {
 				uniqueId = _uniqueId,
 				currentPlayers = _currentPlayers,

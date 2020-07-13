@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Insight {
-	public class ClientGameManager : InsightModule {
+	public class GameClientManager : InsightModule {
 		public delegate void GoInGame(bool newValue);
 		
 		private InsightClient _client;

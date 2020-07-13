@@ -4,19 +4,19 @@ using UnityEngine;
 namespace Common.TrackingLinker.Boolean {
 	public class IngameLinker : BooleanLinkerBase {
 		[Header("Module")]
-		[SerializeField] private ClientGameManager clientGameManager;
+		[SerializeField] private GameClientManager gameClientManager;
 		
 		protected override void Start() {
 			base.Start();
-			OnValueChange(clientGameManager.IsInGame);
+			OnValueChange(gameClientManager.IsInGame);
 		}
 
 		protected override void RegisterHandlers() {
-			clientGameManager.OnGoInGame += OnValueChange;
+			gameClientManager.OnGoInGame += OnValueChange;
 		}
 
 		protected override void UnregisterHandlers() {
-			clientGameManager.OnGoInGame -= OnValueChange;
+			gameClientManager.OnGoInGame -= OnValueChange;
 		}
 	}
 }

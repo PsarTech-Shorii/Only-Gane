@@ -4,16 +4,16 @@ using UnityEngine.Assertions;
 namespace Insight {
 	public class ClientMatchMaker : InsightModule {
 		private InsightClient _client;
-		private ClientGameManager _gameModule;
+		private GameClientManager _gameModule;
 
 		private void Awake() {
-			AddDependency<ClientGameManager>();
+			AddDependency<GameClientManager>();
 		}
 		
 		public override void Initialize(InsightClient client, ModuleManager manager) {
 			_client = client;
 			
-			_gameModule = manager.GetModule<ClientGameManager>();
+			_gameModule = manager.GetModule<GameClientManager>();
 
 			RegisterHandlers();
 		}

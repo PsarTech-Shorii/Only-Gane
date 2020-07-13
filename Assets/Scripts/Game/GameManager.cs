@@ -8,7 +8,7 @@ namespace Game {
 	public class GameManager : NetworkBehaviour {
 		private NetworkConnectionToClient _matchLeaderConn;
 
-		[Header("Communication")] 
+		[Header("Exposed")] 
 		[SerializeField] private SO_Boolean isMatchLeader;
 
 		#region Server

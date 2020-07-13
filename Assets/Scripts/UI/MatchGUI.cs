@@ -12,7 +12,7 @@ namespace UI {
 	public class MatchGUI : MonoBehaviour {
 		private readonly List<GameObject> _gameJoiners = new List<GameObject>();
 
-		private ClientGameManager _clientGameManager;
+		private GameClientManager _gameClientManager;
 		private ClientMatchMaker _clientMatchMaker;
 
 		[Header("Module")]
@@ -33,8 +33,8 @@ namespace UI {
 		[SerializeField] private Slider playerCountSlider;
 
 		private void Awake() {
-			_clientGameManager = (ClientGameManager) clientGameManagerRef.Data;
-			Assert.IsNotNull(_clientGameManager);
+			_gameClientManager = (GameClientManager) clientGameManagerRef.Data;
+			Assert.IsNotNull(_gameClientManager);
 
 			_clientMatchMaker = (ClientMatchMaker) clientMatchMakerRef.Data;
 			Assert.IsNotNull(_clientMatchMaker);
@@ -47,7 +47,7 @@ namespace UI {
 			
 			RegisterHandlers();
 
-			SetGameList(_clientGameManager.gamesList);
+			SetGameList(_gameClientManager.gamesList);
 		}
 
 		private void OnDestroy() {
@@ -55,19 +55,19 @@ namespace UI {
 		}
 
 		private void RegisterHandlers() {
-			_clientGameManager.OnReceiveResponse += OnReceiveGameList;
-			_clientGameManager.OnReceiveMessage += OnUpdateGameList;
-			_clientGameManager.OnReceiveResponse += OnChangeServer;
-			_clientGameManager.OnReceiveMessage += OnChangeServer;
+			_gameClientManager.OnReceiveResponse += OnReceiveGameList;
+			_gameClientManager.OnReceiveMessage += OnUpdateGameList;
+			_gameClientManager.OnReceiveResponse += OnChangeServer;
+			_gameClientManager.OnReceiveMessage += OnChangeServer;
 
 			playerCountSlider.onValueChanged.AddListener(OnPlayerCountChanged);
 		}
 		
 		private void UnregisterHandlers() {
-			_clientGameManager.OnReceiveResponse -= OnReceiveGameList;
-			_clientGameManager.OnReceiveMessage -= OnUpdateGameList;
-			_clientGameManager.OnReceiveResponse -= OnChangeServer;
-			_clientGameManager.OnReceiveMessage -= OnChangeServer;
+			_gameClientManager.OnReceiveResponse -= OnReceiveGameList;
+			_gameClientManager.OnReceiveMessage -= OnUpdateGameList;
+			_gameClientManager.OnReceiveResponse -= OnChangeServer;
+			_gameClientManager.OnReceiveMessage -= OnChangeServer;
 
 			playerCountSlider.onValueChanged.RemoveListener(OnPlayerCountChanged);
 		}
@@ -95,7 +95,7 @@ namespace UI {
 					var gameJoinerObject = Instantiate(gameJoinerPrefabs, gameJoinerParent);
 					var gameJoiner = gameJoinerObject.GetComponent<GameJoinerGUI>();
 					gameJoiner.Initialize(message.game);
-					gameJoiner.joinEvent.AddListener(_clientGameManager.JoinGame);
+					gameJoiner.joinEvent.AddListener(_gameClientManager.JoinGame);
 					_gameJoiners.Add(gameJoinerObject);
 					break;
 				}
@@ -141,7 +141,7 @@ namespace UI {
 				var gameJoinerObject = Instantiate(gameJoinerPrefabs, gameJoinerParent);
 				var gameJoiner = gameJoinerObject.GetComponent<GameJoinerGUI>();
 				gameJoiner.Initialize(game);
-				gameJoiner.joinEvent.AddListener(_clientGameManager.JoinGame);
+				gameJoiner.joinEvent.AddListener(_gameClientManager.JoinGame);
 				_gameJoiners.Add(gameJoinerObject);
 			}
 		}
@@ -152,7 +152,7 @@ namespace UI {
 
 		public void CreateGame() {
 			gameCreationButton.interactable = false;
-			_clientGameManager.CreateGame(new CreateGameMsg {
+			_gameClientManager.CreateGame(new CreateGameMsg {
 				gameName = gameNameText.text,
 				minPlayers = (int) playerCountSlider.value
 			});
