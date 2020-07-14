@@ -12,6 +12,6 @@ namespace Common.TrackingLinker {
 
 		protected abstract void RegisterHandlers();
 		protected abstract void UnregisterHandlers();
-		protected abstract void OnValueChange(T newValue);
+		protected abstract void OnValueChange(T _newValue);
 	}
 }

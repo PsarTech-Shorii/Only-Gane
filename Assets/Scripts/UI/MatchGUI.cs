@@ -10,10 +10,10 @@ using Slider = UnityEngine.UI.Slider;
 
 namespace UI {
 	public class MatchGUI : MonoBehaviour {
-		private readonly List<GameObject> _gameJoiners = new List<GameObject>();
+		private readonly List<GameObject> gameJoiners = new List<GameObject>();
 
-		private GameClientManager _gameClientManager;
-		private ClientMatchMaker _clientMatchMaker;
+		private GameClientManager gameClientManager;
+		private ClientMatchMaker clientMatchMaker;
 
 		[Header("Module")]
 		[SerializeField] private SO_Object clientGameManagerRef;
@@ -33,11 +33,11 @@ namespace UI {
 		[SerializeField] private Slider playerCountSlider;
 
 		private void Awake() {
-			_gameClientManager = (GameClientManager) clientGameManagerRef.Data;
-			Assert.IsNotNull(_gameClientManager);
+			gameClientManager = (GameClientManager) clientGameManagerRef.Data;
+			Assert.IsNotNull(gameClientManager);
 
-			_clientMatchMaker = (ClientMatchMaker) clientMatchMakerRef.Data;
-			Assert.IsNotNull(_clientMatchMaker);
+			clientMatchMaker = (ClientMatchMaker) clientMatchMakerRef.Data;
+			Assert.IsNotNull(clientMatchMaker);
 			
 			Assert.AreNotEqual(0, maxPlayers.Data);
 		}
@@ -47,7 +47,7 @@ namespace UI {
 			
 			RegisterHandlers();
 
-			SetGameList(_gameClientManager.gamesList);
+			SetGameList(gameClientManager.gamesList);
 		}
 
 		private void OnDestroy() {
@@ -55,27 +55,27 @@ namespace UI {
 		}
 
 		private void RegisterHandlers() {
-			_gameClientManager.OnReceiveResponse += OnReceiveGameList;
-			_gameClientManager.OnReceiveMessage += OnUpdateGameList;
-			_gameClientManager.OnReceiveResponse += OnChangeServer;
-			_gameClientManager.OnReceiveMessage += OnChangeServer;
+			gameClientManager.OnReceiveResponse += OnReceiveGameList;
+			gameClientManager.OnReceiveMessage += OnUpdateGameList;
+			gameClientManager.OnReceiveResponse += OnChangeServer;
+			gameClientManager.OnReceiveMessage += OnChangeServer;
 
 			playerCountSlider.onValueChanged.AddListener(OnPlayerCountChanged);
 		}
 		
 		private void UnregisterHandlers() {
-			_gameClientManager.OnReceiveResponse -= OnReceiveGameList;
-			_gameClientManager.OnReceiveMessage -= OnUpdateGameList;
-			_gameClientManager.OnReceiveResponse -= OnChangeServer;
-			_gameClientManager.OnReceiveMessage -= OnChangeServer;
+			gameClientManager.OnReceiveResponse -= OnReceiveGameList;
+			gameClientManager.OnReceiveMessage -= OnUpdateGameList;
+			gameClientManager.OnReceiveResponse -= OnChangeServer;
+			gameClientManager.OnReceiveMessage -= OnChangeServer;
 
 			playerCountSlider.onValueChanged.RemoveListener(OnPlayerCountChanged);
 		}
 
-		private void OnReceiveGameList(InsightMessageBase messageBase, CallbackStatus status) {
-			if(!(messageBase is GameListMsg message)) return;
+		private void OnReceiveGameList(InsightMessageBase _message, CallbackStatus _status) {
+			if(!(_message is GameListMsg message)) return;
 
-			switch (status) {
+			switch (_status) {
 				case CallbackStatus.Success: {
 					SetGameList(message.gamesArray);
 				}
@@ -88,27 +88,27 @@ namespace UI {
 			}
 		}
 
-		private void OnUpdateGameList(InsightMessageBase messageBase) {
-			if(!(messageBase is GameListStatusMsg message)) return;
+		private void OnUpdateGameList(InsightMessageBase _message) {
+			if(!(_message is GameListStatusMsg message)) return;
 			switch (message.operation) {
 				case GameListStatusMsg.Operation.Add: {
 					var gameJoinerObject = Instantiate(gameJoinerPrefabs, gameJoinerParent);
 					var gameJoiner = gameJoinerObject.GetComponent<GameJoinerGUI>();
 					gameJoiner.Initialize(message.game);
-					gameJoiner.joinEvent.AddListener(_gameClientManager.JoinGame);
-					_gameJoiners.Add(gameJoinerObject);
+					gameJoiner.joinEvent.AddListener(gameClientManager.JoinGame);
+					gameJoiners.Add(gameJoinerObject);
 					break;
 				}
 				case GameListStatusMsg.Operation.Remove: {
-					var gameJoinerObject = _gameJoiners.Find(e =>
-						e.GetComponent<GameJoinerGUI>().Is(message.game.uniqueId));
+					var gameJoinerObject = gameJoiners.Find(_e =>
+						_e.GetComponent<GameJoinerGUI>().Is(message.game.uniqueId));
 					Destroy(gameJoinerObject);
-					_gameJoiners.Remove(gameJoinerObject);
+					gameJoiners.Remove(gameJoinerObject);
 					break;
 				}
 				case GameListStatusMsg.Operation.Update: {
-					var gameJoinerObject = _gameJoiners.Find(e =>
-						e.GetComponent<GameJoinerGUI>().Is(message.game.uniqueId));
+					var gameJoinerObject = gameJoiners.Find(_e =>
+						_e.GetComponent<GameJoinerGUI>().Is(message.game.uniqueId));
 					
 					gameJoinerObject.GetComponent<GameJoinerGUI>().UpdatePlayerCount(new GameStatusMsg {
 							currentPlayers = message.game.currentPlayers,
@@ -122,37 +122,37 @@ namespace UI {
 			}
 		}
 
-		private void OnChangeServer(InsightMessageBase callbackMsg, CallbackStatus status) {
-			OnChangeServer(callbackMsg);
+		private void OnChangeServer(InsightMessageBase _callbackMsg, CallbackStatus _status) {
+			OnChangeServer(_callbackMsg);
 		}
 		
-		private void OnChangeServer(InsightMessageBase messageBase) {
-			if(!(messageBase is ChangeServerMsg)) return;
+		private void OnChangeServer(InsightMessageBase _message) {
+			if(!(_message is ChangeServerMsg)) return;
 
 			gameCreationButton.interactable = true;
 			matchGameButton.interactable = true;
 		}
 
-		private void SetGameList(IEnumerable<GameContainer> games) {
-			foreach (var gameJoiner in _gameJoiners) Destroy(gameJoiner);
-			_gameJoiners.Clear();
+		private void SetGameList(IEnumerable<GameContainer> _games) {
+			foreach (var gameJoiner in gameJoiners) Destroy(gameJoiner);
+			gameJoiners.Clear();
 
-			foreach (var game in games) {
+			foreach (var game in _games) {
 				var gameJoinerObject = Instantiate(gameJoinerPrefabs, gameJoinerParent);
 				var gameJoiner = gameJoinerObject.GetComponent<GameJoinerGUI>();
 				gameJoiner.Initialize(game);
-				gameJoiner.joinEvent.AddListener(_gameClientManager.JoinGame);
-				_gameJoiners.Add(gameJoinerObject);
+				gameJoiner.joinEvent.AddListener(gameClientManager.JoinGame);
+				gameJoiners.Add(gameJoinerObject);
 			}
 		}
 
-		private void OnPlayerCountChanged(float playerCount) {
-			playerCountText.text = $"Minimum player count : {playerCount}";
+		private void OnPlayerCountChanged(float _playerCount) {
+			playerCountText.text = $"Minimum player count : {_playerCount}";
 		}
 
 		public void CreateGame() {
 			gameCreationButton.interactable = false;
-			_gameClientManager.CreateGame(new CreateGameMsg {
+			gameClientManager.CreateGame(new CreateGameMsg {
 				gameName = gameNameText.text,
 				minPlayers = (int) playerCountSlider.value
 			});
@@ -160,9 +160,9 @@ namespace UI {
 		}
 
 		public void MatchGame() {
-			if (_gameJoiners.Exists(e => e.activeInHierarchy)) {
+			if (gameJoiners.Exists(_e => _e.activeInHierarchy)) {
 				matchGameButton.interactable = false;
-				_clientMatchMaker.MatchGame();
+				clientMatchMaker.MatchGame();
 			}
 			else {
 				gameCreationPopup.SetActive(true);

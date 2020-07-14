@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 
 namespace UI {
 	public class LoginGUI : MonoBehaviour {
-		private ClientAuthentication _clientAuthentication;
+		private ClientAuthentication clientAuthentication;
 		
 		[Header("Module")]
 		[SerializeField] private SO_Object clientAuthenticationRef;
@@ -16,8 +16,8 @@ namespace UI {
 		[SerializeField] private TextMeshProUGUI statusText;
 
 		private void Awake() {
-			_clientAuthentication = (ClientAuthentication) clientAuthenticationRef.Data;
-			Assert.IsNotNull(_clientAuthentication);
+			clientAuthentication = (ClientAuthentication) clientAuthenticationRef.Data;
+			Assert.IsNotNull(clientAuthentication);
 		}
 
 		private void Start() {
@@ -29,25 +29,25 @@ namespace UI {
 		}
 
 		private void RegisterHandlers() {
-			_clientAuthentication.OnReceiveResponse += OnLogin;
+			clientAuthentication.OnReceiveResponse += OnLogin;
 		}
 		
 		private void UnregisterHandlers() {
-			_clientAuthentication.OnReceiveResponse -= OnLogin;
+			clientAuthentication.OnReceiveResponse -= OnLogin;
 		}
 
 		public void SendLoginMsg() {
-			_clientAuthentication.SendLoginMsg(new LoginMsg{accountName = usernameText.text});
+			clientAuthentication.SendLoginMsg(new LoginMsg{accountName = usernameText.text});
 		}
 		
-		private void OnLogin(InsightMessageBase messageBase, CallbackStatus status) {
-			if(!(messageBase is LoginMsg)) return;
+		private void OnLogin(InsightMessageBase _message, CallbackStatus _status) {
+			if(!(_message is LoginMsg)) return;
 			
-			if (status == CallbackStatus.Success) {
+			if (_status == CallbackStatus.Success) {
 				gameObject.SetActive(false);
 			}
 			else {
-				statusText.text = $"Login : {status}";
+				statusText.text = $"Login : {_status}";
 			}
 		}
 	}

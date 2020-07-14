@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 
 namespace UI {
 	public class ChatGUI : MonoBehaviour {
-		private ChatClient _chatClient;
+		private ChatClient chatClient;
 		
 		[Header("Module")]
 		[SerializeField] private SO_Object chatClientRef;
@@ -16,8 +16,8 @@ namespace UI {
 		[SerializeField] private TextMeshProUGUI chatText;
 
 		private void Awake() {
-			_chatClient = (ChatClient) chatClientRef.Data;
-			Assert.IsNotNull(_chatClient);
+			chatClient = (ChatClient) chatClientRef.Data;
+			Assert.IsNotNull(chatClient);
 		}
 
 		private void Start() {
@@ -29,11 +29,11 @@ namespace UI {
 		}
 
 		private void RegisterHandlers() {
-			_chatClient.OnReceiveMessage += OnReceiveChat;
+			chatClient.OnReceiveMessage += OnReceiveChat;
 		}
 		
 		private void UnregisterHandlers() {
-			_chatClient.OnReceiveMessage -= OnReceiveChat;
+			chatClient.OnReceiveMessage -= OnReceiveChat;
 		}
 
 		private void OnEnable() {
@@ -42,11 +42,11 @@ namespace UI {
 		}
 
 		public void Chat() {
-			_chatClient.Chat(chatText.text);
+			chatClient.Chat(chatText.text);
 		}
 
-		private void OnReceiveChat(InsightMessageBase messageBase) {
-			if(!(messageBase is ChatMsg message)) return;
+		private void OnReceiveChat(InsightMessageBase _message) {
+			if(!(_message is ChatMsg message)) return;
 			chatLogText.text += $"{message.username} : {message.data}\n";
 		}
 	}

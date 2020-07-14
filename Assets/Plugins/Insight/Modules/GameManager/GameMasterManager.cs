@@ -12,9 +12,9 @@ namespace Insight {
 	}
 	
 	public class GameMasterManager : InsightModule {
-		private InsightServer _server;
-
-		private readonly Dictionary<string, GameLauncher> _gameLaunchers = new Dictionary<string, GameLauncher>();
+		private readonly Dictionary<string, GameLauncher> gameLaunchers = new Dictionary<string, GameLauncher>();
+		
+		private InsightServer server;
 		
 		[HideInInspector] public List<GameContainer> registeredGameServers = new List<GameContainer>();
 		[HideInInspector] public List<PlayerContainer> registeredPlayers = new List<PlayerContainer>();
@@ -24,32 +24,31 @@ namespace Insight {
 			AddDependency<MasterSpawner>();
 		}
 
-		public override void Initialize(InsightServer server, ModuleManager manager) {
-			_server = server;
-			
-			Debug.Log("[Server - GameManager] - Initialization");
-			
+		public override void Initialize(InsightServer _server, ModuleManager _manager) {
+			Debug.Log("[GameMaster - Manager] - Initialization");
+			server = _server;
+
 			RegisterHandlers();
 		}
 
 		private void RegisterHandlers() {
-			_server.transport.OnServerDisconnected.AddListener(HandleDisconnect);
+			server.transport.OnServerDisconnected.AddListener(HandleDisconnect);
 			
-			_server.RegisterHandler<RegisterGameMsg>(HandleRegisterGameMsg);
-			_server.RegisterHandler<RegisterPlayerMsg>(HandleRegisterPlayerMsg);
-			_server.RegisterHandler<CreateGameMsg>(HandleCreateGameMsg);
-			_server.RegisterHandler<GameStatusMsg>(HandleGameStatusMsg);
-			_server.RegisterHandler<JoinGameMsg>(HandleJoinGameMsg);
-			_server.RegisterHandler<LeaveGameMsg>(HandleLeaveGameMsg);
-			_server.RegisterHandler<GameListMsg>(HandleGameListMsg);
+			server.RegisterHandler<RegisterGameMsg>(HandleRegisterGameMsg);
+			server.RegisterHandler<RegisterPlayerMsg>(HandleRegisterPlayerMsg);
+			server.RegisterHandler<CreateGameMsg>(HandleCreateGameMsg);
+			server.RegisterHandler<GameStatusMsg>(HandleGameStatusMsg);
+			server.RegisterHandler<JoinGameMsg>(HandleJoinGameMsg);
+			server.RegisterHandler<LeaveGameMsg>(HandleLeaveGameMsg);
+			server.RegisterHandler<GameListMsg>(HandleGameListMsg);
 		}
 		
-		private void HandleDisconnect(int connectionId) {
-			var game = registeredGameServers.Find(e => e.connectionId == connectionId);
+		private void HandleDisconnect(int _connectionId) {
+			var game = registeredGameServers.Find(_e => _e.connectionId == _connectionId);
 			if (game != null) {
 				registeredGameServers.Remove(game);
 				foreach (var playerTemp in registeredPlayers) {
-					_server.NetworkSend(playerTemp.connectionId, new GameListStatusMsg {
+					server.NetworkSend(playerTemp.connectionId, new GameListStatusMsg {
 						operation = GameListStatusMsg.Operation.Remove,
 						game = game
 					});
@@ -58,7 +57,7 @@ namespace Insight {
 				return;
 			}
 
-			var player = registeredPlayers.Find(e => e.connectionId == connectionId);
+			var player = registeredPlayers.Find(_e => _e.connectionId == _connectionId);
 			if (player != null) {
 				registeredPlayers.Remove(player);
 				
@@ -66,11 +65,11 @@ namespace Insight {
 			}
 		}
 
-		private void HandleRegisterGameMsg(InsightMessage insightMsg) {
-			if (insightMsg is InsightNetworkMessage netMsg) {
-				var message = (RegisterGameMsg) insightMsg.message;
+		private void HandleRegisterGameMsg(InsightMessage _insightMsg) {
+			if (_insightMsg is InsightNetworkMessage netMsg) {
+				var message = (RegisterGameMsg) _insightMsg.message;
 				
-				Debug.Log("[Server - GameManager] - Received game registration");
+				Debug.Log("[GameMaster - Manager] - Received game registration");
 
 				var game = new GameContainer {
 					connectionId = netMsg.connectionId,
@@ -87,7 +86,7 @@ namespace Insight {
 				registeredGameServers.Add(game);
 
 				foreach (var playerTemp in registeredPlayers) {
-					_server.NetworkSend(playerTemp.connectionId, new GameListStatusMsg {
+					server.NetworkSend(playerTemp.connectionId, new GameListStatusMsg {
 						operation = GameListStatusMsg.Operation.Add,
 						game = game
 					});
@@ -96,15 +95,15 @@ namespace Insight {
 				LaunchGame(game.uniqueId);
 			}
 			else {
-				Debug.LogError("[Server - GameManager] - Rejected (Internal) game registration");
+				Debug.LogError("[GameMaster - Manager] - Rejected (Internal) game registration");
 			}
 		}
 		
-		private void HandleRegisterPlayerMsg(InsightMessage insightMsg) {
-			if (insightMsg is InsightNetworkMessage netMsg) {
+		private void HandleRegisterPlayerMsg(InsightMessage _insightMsg) {
+			if (_insightMsg is InsightNetworkMessage netMsg) {
 				// var message = (RegisterPlayerMsg) insightMsg.message;
 				
-				Debug.Log("[Server - GameManager] - Received player registration");
+				Debug.Log("[GameMaster - Manager] - Received player registration");
 
 				var playerUniqueId = Guid.NewGuid().ToString();
 				
@@ -117,76 +116,76 @@ namespace Insight {
 					new RegisterPlayerMsg {
 						uniqueId = playerUniqueId
 					}) {
-					callbackId = insightMsg.callbackId,
+					callbackId = _insightMsg.callbackId,
 					status = CallbackStatus.Success
 				};
-				_server.NetworkReply(netMsg.connectionId, responseToSend);
+				server.NetworkReply(netMsg.connectionId, responseToSend);
 			}
 			else {
-				Debug.LogError("[Server - GameManager] - Rejected (Internal) player registration");
+				Debug.LogError("[GameMaster - Manager] - Rejected (Internal) player registration");
 			}
 		}
 
-		private void HandleGameStatusMsg(InsightMessage insightMsg) {
-			var message = (GameStatusMsg) insightMsg.message;
+		private void HandleGameStatusMsg(InsightMessage _insightMsg) {
+			var message = (GameStatusMsg) _insightMsg.message;
 
-			Debug.Log("[Server - GameManager] - Received game update");
+			Debug.Log("[GameMaster - Manager] - Received game update");
 
-			var game = registeredGameServers.Find(e => e.uniqueId == message.uniqueId);
+			var game = registeredGameServers.Find(_e => _e.uniqueId == message.uniqueId);
 			Assert.IsNotNull(game);
 			game.currentPlayers = message.currentPlayers;
 			
 			foreach (var playerTemp in registeredPlayers) {
-				_server.NetworkSend(playerTemp.connectionId, new GameListStatusMsg {
+				server.NetworkSend(playerTemp.connectionId, new GameListStatusMsg {
 					operation = GameListStatusMsg.Operation.Update,
 					game = game
 				});
 			}
 		}
 
-		private void HandleGameListMsg(InsightMessage insightMsg) {
+		private void HandleGameListMsg(InsightMessage _insightMsg) {
 			// var message = (GameListMsg) insightMsg.message;
 
-			Debug.Log("[Server - GameManager] - Received player requesting game list");
+			Debug.Log("[GameMaster - Manager] - Received player requesting game list");
 
 			var gamesListMsg = new GameListMsg();
 			gamesListMsg.Load(registeredGameServers);
 				
 			var responseToSend = new InsightNetworkMessage(gamesListMsg) {
-				callbackId = insightMsg.callbackId,
+				callbackId = _insightMsg.callbackId,
 				status = CallbackStatus.Success
 			};
 			
-			if (insightMsg is InsightNetworkMessage netMsg) {
-				_server.NetworkReply(netMsg.connectionId, responseToSend);
+			if (_insightMsg is InsightNetworkMessage netMsg) {
+				server.NetworkReply(netMsg.connectionId, responseToSend);
 			}
 			else {
-				_server.InternalReply(responseToSend);
+				server.InternalReply(responseToSend);
 			}
 		}
 
-		private void HandleCreateGameMsg(InsightMessage insightMsg) {
-			var message = (CreateGameMsg) insightMsg.message;
+		private void HandleCreateGameMsg(InsightMessage _insightMsg) {
+			var message = (CreateGameMsg) _insightMsg.message;
 
-			Debug.Log("[Server - GameManager] - Received player requesting game creation");
+			Debug.Log("[GameMaster - Manager] - Received player requesting game creation");
 
 			var requestSpawnStartMsg = new RequestSpawnStartToMasterMsg {
 				gameName = message.gameName,
 				minPlayers = message.minPlayers
 			};
 				
-			_server.InternalSend(requestSpawnStartMsg, callbackMsg => {
-				Debug.Log($"[Server - GameManager] - Received games create : {callbackMsg.status}");
+			server.InternalSend(requestSpawnStartMsg, _callbackMsg => {
+				Debug.Log($"[GameMaster - Manager] - Received games create : {_callbackMsg.status}");
 
-				Assert.AreNotEqual(CallbackStatus.Default, callbackMsg.status);
-				switch (callbackMsg.status) {
+				Assert.AreNotEqual(CallbackStatus.Default, _callbackMsg.status);
+				switch (_callbackMsg.status) {
 					case CallbackStatus.Success: {
-						var responseReceived = (RequestSpawnStartMsg) callbackMsg.message;
+						var responseReceived = (RequestSpawnStartMsg) _callbackMsg.message;
 
 						var playerConnId = 0;
-						if (insightMsg is InsightNetworkMessage netMsg) playerConnId = netMsg.connectionId;
+						if (_insightMsg is InsightNetworkMessage netMsg) playerConnId = netMsg.connectionId;
 						
-						_gameLaunchers.Add(responseReceived.gameUniqueId, new GameLauncher {
+						gameLaunchers.Add(responseReceived.gameUniqueId, new GameLauncher {
 							playerConnId = playerConnId,
 							playerUniqueId = message.uniqueId,
 							message = new InsightNetworkMessage(new ChangeServerMsg {
@@ -194,7 +193,7 @@ namespace Insight {
 								networkAddress = responseReceived.networkAddress,
 								networkPort = responseReceived.networkPort
 							}) {
-								callbackId = insightMsg.callbackId,
+								callbackId = _insightMsg.callbackId,
 								status = CallbackStatus.Success
 							}
 						});
@@ -203,15 +202,15 @@ namespace Insight {
 					}
 					case CallbackStatus.Error: {
 						var responseToSend = new InsightNetworkMessage(new ChangeServerMsg ()) {
-							callbackId = insightMsg.callbackId,
+							callbackId = _insightMsg.callbackId,
 							status = CallbackStatus.Error
 						};
 						
-						if (insightMsg is InsightNetworkMessage netMsg) {
-							_server.NetworkReply(netMsg.connectionId, responseToSend);
+						if (_insightMsg is InsightNetworkMessage netMsg) {
+							server.NetworkReply(netMsg.connectionId, responseToSend);
 						}
 						else {
-							_server.InternalReply(responseToSend);
+							server.InternalReply(responseToSend);
 						}
 							
 						break;
@@ -224,16 +223,16 @@ namespace Insight {
 			});
 		}
 
-		private void HandleJoinGameMsg(InsightMessage insightMsg) {
-			var message = (JoinGameMsg) insightMsg.message;
+		private void HandleJoinGameMsg(InsightMessage _insightMsg) {
+			var message = (JoinGameMsg) _insightMsg.message;
 
-			Debug.Log($"[Server - GameManager] - Received player requesting join the game : {message.gameUniqueId}");
+			Debug.Log($"[GameMaster - Manager] - Received player requesting join the game : {message.gameUniqueId}");
 
-			var game = registeredGameServers.Find(e => e.uniqueId == message.gameUniqueId);
+			var game = registeredGameServers.Find(_e => _e.uniqueId == message.gameUniqueId);
 			Assert.IsNotNull(game);
 
 			if (game.currentPlayers < game.maxPlayers) {
-				Assert.IsTrue(registeredPlayers.Exists(e => e.uniqueId == message.uniqueId));
+				Assert.IsTrue(registeredPlayers.Exists(_e => _e.uniqueId == message.uniqueId));
 				playersInGame.Add(message.uniqueId, message.gameUniqueId);
 
 				var changeServerMsg = new ChangeServerMsg {
@@ -243,64 +242,64 @@ namespace Insight {
 				};
 					
 				var responseToSend = new InsightNetworkMessage(changeServerMsg) {
-					callbackId = insightMsg.callbackId,
+					callbackId = _insightMsg.callbackId,
 					status = CallbackStatus.Success
 				};
 				
-				if (insightMsg is InsightNetworkMessage netMsg) {
-					_server.NetworkReply(netMsg.connectionId, responseToSend);
+				if (_insightMsg is InsightNetworkMessage netMsg) {
+					server.NetworkReply(netMsg.connectionId, responseToSend);
 				}
 				else {
-					_server.InternalReply(responseToSend);
+					server.InternalReply(responseToSend);
 				}
 			}
 			else {
 				var responseToSend = new InsightNetworkMessage(new ChangeServerMsg()) {
-					callbackId = insightMsg.callbackId,
+					callbackId = _insightMsg.callbackId,
 					status = CallbackStatus.Error
 				};
 				
-				if (insightMsg is InsightNetworkMessage netMsg) {
-					_server.NetworkReply(netMsg.connectionId, responseToSend);
+				if (_insightMsg is InsightNetworkMessage netMsg) {
+					server.NetworkReply(netMsg.connectionId, responseToSend);
 				}
 				else {
-					_server.InternalReply(responseToSend);
+					server.InternalReply(responseToSend);
 				}
 			}
 		}
 
-		private void HandleLeaveGameMsg(InsightMessage insightMsg) {
-			var message = (LeaveGameMsg) insightMsg.message;
+		private void HandleLeaveGameMsg(InsightMessage _insightMsg) {
+			var message = (LeaveGameMsg) _insightMsg.message;
 
-			Debug.Log("[Server - GameManager] - Received player requesting leave the game ");
+			Debug.Log("[GameMaster - Manager] - Received player requesting leave the game ");
 
 			playersInGame.Remove(message.uniqueId);
 		}
 
-		private void LaunchGame(string gameUniqueId) {
-			var gameLauncher = _gameLaunchers[gameUniqueId];
+		private void LaunchGame(string _gameUniqueId) {
+			var gameLauncher = gameLaunchers[_gameUniqueId];
 
 			if (gameLauncher.playerConnId != 0) {
-				_server.NetworkReply(gameLauncher.playerConnId, gameLauncher.message);
+				server.NetworkReply(gameLauncher.playerConnId, gameLauncher.message);
 			}
 			else {
-				_server.InternalReply(gameLauncher.message);
+				server.InternalReply(gameLauncher.message);
 			}
 			
-			Assert.IsTrue(registeredPlayers.Exists(e => e.uniqueId == gameLauncher.playerUniqueId));
-			playersInGame.Add(gameLauncher.playerUniqueId, gameUniqueId);
+			Assert.IsTrue(registeredPlayers.Exists(_e => _e.uniqueId == gameLauncher.playerUniqueId));
+			playersInGame.Add(gameLauncher.playerUniqueId, _gameUniqueId);
 
-			_gameLaunchers.Remove(gameUniqueId);
+			gameLaunchers.Remove(_gameUniqueId);
 		}
 
-		public IEnumerable<int> GetPlayersInGame(int playerConnId) {
-			var player = registeredPlayers.Find(e => e.connectionId == playerConnId);
+		public IEnumerable<int> GetPlayersInGame(int _playerConnId) {
+			var player = registeredPlayers.Find(_e => _e.connectionId == _playerConnId);
 			return player == null ? null : GetPlayersInGame(playersInGame[player.uniqueId]);
 		}
 
-		private int[] GetPlayersInGame(string gameUniqueId) {
-			return (from playerInGame in playersInGame.Where(e => e.Value == gameUniqueId)
-				from player in registeredPlayers.FindAll(e => e.uniqueId == playerInGame.Key)
+		private int[] GetPlayersInGame(string _gameUniqueId) {
+			return (from playerInGame in playersInGame.Where(_e => _e.Value == _gameUniqueId)
+				from player in registeredPlayers.FindAll(_e => _e.uniqueId == playerInGame.Key)
 				select player.connectionId).ToArray();
 		}
 	}

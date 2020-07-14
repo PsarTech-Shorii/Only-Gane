@@ -15,6 +15,6 @@ namespace Common.Enabler {
 			enabler.RemoveListener(CheckEnable);
 		}
 
-		protected abstract void CheckEnable(bool newEnable);
+		protected abstract void CheckEnable(bool _newEnable);
 	}
 }

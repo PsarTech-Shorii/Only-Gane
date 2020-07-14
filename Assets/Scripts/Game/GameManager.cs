@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 
 namespace Game {
 	public class GameManager : NetworkBehaviour {
-		private NetworkConnectionToClient _matchLeaderConn;
+		private NetworkConnectionToClient matchLeaderConn;
 
 		[Header("Exposed")] 
 		[SerializeField] private SO_Boolean isMatchLeader;
@@ -15,9 +15,9 @@ namespace Game {
 
 		[Server]
 		public void SetMatchLeader() {
-			var oldMatchLeader = _matchLeaderConn;
-			_matchLeaderConn = NetworkServer.connections.Count > 0 ? NetworkServer.connections.First().Value : null;
-			if (_matchLeaderConn == oldMatchLeader) {
+			var oldMatchLeader = matchLeaderConn;
+			matchLeaderConn = NetworkServer.connections.Count > 0 ? NetworkServer.connections.First().Value : null;
+			if (matchLeaderConn == oldMatchLeader) {
 				Debug.Log($"SetMatchLeader - Nothing to do");
 				return;
 			}
@@ -27,9 +27,9 @@ namespace Game {
 				TargetUnassignLeader(oldMatchLeader);
 			}
 
-			if (_matchLeaderConn != null) {
-				Debug.Log($"SetMatchLeader - AssignLeader : {_matchLeaderConn}");
-				TargetAssignLeader(_matchLeaderConn);
+			if (matchLeaderConn != null) {
+				Debug.Log($"SetMatchLeader - AssignLeader : {matchLeaderConn}");
+				TargetAssignLeader(matchLeaderConn);
 			}
 		}
 
@@ -38,13 +38,13 @@ namespace Game {
 		#region Client
 
 		[TargetRpc]
-		private void TargetAssignLeader(NetworkConnection target) {
+		private void TargetAssignLeader(NetworkConnection _target) {
 			Assert.IsFalse(isMatchLeader.Data);
 			isMatchLeader.Data = true;
 		}
 
 		[TargetRpc]
-		private void TargetUnassignLeader(NetworkConnection target) {
+		private void TargetUnassignLeader(NetworkConnection _target) {
 			Assert.IsTrue(isMatchLeader.Data);
 			isMatchLeader.Data = true;
 		}

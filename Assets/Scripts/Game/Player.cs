@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 
 namespace Game {
 	public class Player : NetworkBehaviour {
-		private GameManager _gameManager;
+		private GameManager gameManager;
 		
 		[Header("Module")]
 		[SerializeField] private SO_Object gameManagerRef;
@@ -14,18 +14,18 @@ namespace Game {
 			base.OnStartServer();
 			InitializeServer();
 			
-			_gameManager.SetMatchLeader();
+			gameManager.SetMatchLeader();
 		}
 
 		[Server] private void InitializeServer() {
-			_gameManager = (GameManager) gameManagerRef.Data;
-			Assert.IsNotNull(_gameManager);
+			gameManager = (GameManager) gameManagerRef.Data;
+			Assert.IsNotNull(gameManager);
 		}
 		
 		[Server] public override void OnStopServer() {
 			base.OnStopServer();
 			
-			_gameManager.SetMatchLeader();
+			gameManager.SetMatchLeader();
 		}
 	}
 }

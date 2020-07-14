@@ -10,33 +10,33 @@ namespace UI {
 		[SerializeField] private TextMeshProUGUI gameNameText;
 		[SerializeField] private TextMeshProUGUI countText;
 		
-		private GameContainer _game;
+		private GameContainer game;
 
 		public JoinEvent joinEvent = new JoinEvent();
 
-		public void Initialize(GameContainer game) {
-			_game = game;
-			gameNameText.text = _game.gameName;
+		public void Initialize(GameContainer _game) {
+			game = _game;
+			gameNameText.text = game.gameName;
 			UpdateGUI();
 		}
 
-		public void UpdatePlayerCount(GameStatusMsg gameStatus) {
-			_game.currentPlayers = gameStatus.currentPlayers;
-			_game.hasStarted = gameStatus.hasStarted;
+		public void UpdatePlayerCount(GameStatusMsg _gameStatus) {
+			game.currentPlayers = _gameStatus.currentPlayers;
+			game.hasStarted = _gameStatus.hasStarted;
 			UpdateGUI();
 		}
 
-		public bool Is(string uniqueId) {
-			return _game.uniqueId == uniqueId;
+		public bool Is(string _uniqueId) {
+			return game.uniqueId == _uniqueId;
 		}
 
 		public void JoinGame() {
-			joinEvent?.Invoke(_game.uniqueId);
+			joinEvent?.Invoke(game.uniqueId);
 		}
 
 		private void UpdateGUI() {
-			countText.text = $"{_game.currentPlayers} / {_game.minPlayers}";
-			gameObject.SetActive(!_game.hasStarted && _game.currentPlayers < _game.maxPlayers);
+			countText.text = $"{game.currentPlayers} / {game.minPlayers}";
+			gameObject.SetActive(!game.hasStarted && game.currentPlayers < game.maxPlayers);
 		}
 	}
 }

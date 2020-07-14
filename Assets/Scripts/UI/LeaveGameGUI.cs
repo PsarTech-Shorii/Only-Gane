@@ -5,18 +5,18 @@ using UnityEngine.Assertions;
 
 namespace UI {
 	public class LeaveGameGUI : MonoBehaviour {
-		private GameClientManager _gameClientManager;
+		private GameClientManager gameClientManager;
 		
 		[Header("Module")]
 		[SerializeField] private SO_Object clientGameManagerRef;
 
 		private void Awake() {
-			_gameClientManager = (GameClientManager) clientGameManagerRef.Data;
-			Assert.IsNotNull(_gameClientManager);
+			gameClientManager = (GameClientManager) clientGameManagerRef.Data;
+			Assert.IsNotNull(gameClientManager);
 		}
 
 		public void LeaveGame() {
-			_gameClientManager.LeaveGame();
+			gameClientManager.LeaveGame();
 		}
 	}
 }
