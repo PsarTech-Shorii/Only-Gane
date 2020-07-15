@@ -8,7 +8,7 @@ namespace Common.TrackingLinker.Boolean {
 
 		protected override void Start() {
 			base.Start();
-			OnValueChange(clientAuthentication.IsLogin);
+			target.Data = clientAuthentication.IsLogin;
 		}
 
 		protected override void RegisterHandlers() {

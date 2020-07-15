@@ -27,10 +27,16 @@ namespace UI {
 		[Header("Interface")]
 		[SerializeField] private GameObject gameCreationPopup;
 		[SerializeField] private Button gameCreationButton;
+		
 		[SerializeField] private Button matchGameButton;
+		
 		[SerializeField] private TextMeshProUGUI gameNameText;
-		[SerializeField] private TextMeshProUGUI playerCountText;
-		[SerializeField] private Slider playerCountSlider;
+		
+		[SerializeField] private TextMeshProUGUI minPlayerCountText;
+		[SerializeField] private Slider minPlayerCountSlider;
+		
+		[SerializeField] private TextMeshProUGUI maxPlayerCountText;
+		[SerializeField] private Slider maxPlayerCountSlider;
 
 		private void Awake() {
 			gameClientManager = (GameClientManager) clientGameManagerRef.Data;
@@ -43,7 +49,9 @@ namespace UI {
 		}
 
 		private void Start() {
-			playerCountSlider.maxValue = maxPlayers.Data;
+			minPlayerCountSlider.maxValue = maxPlayers.Data;
+			maxPlayerCountSlider.maxValue = maxPlayers.Data;
+			maxPlayerCountSlider.value = maxPlayers.Data;
 			
 			RegisterHandlers();
 
@@ -60,7 +68,8 @@ namespace UI {
 			gameClientManager.OnReceiveResponse += OnChangeServer;
 			gameClientManager.OnReceiveMessage += OnChangeServer;
 
-			playerCountSlider.onValueChanged.AddListener(OnPlayerCountChanged);
+			minPlayerCountSlider.onValueChanged.AddListener(OnMinPlayerCountChanged);
+			maxPlayerCountSlider.onValueChanged.AddListener(OnMaxPlayerCountChanged);
 		}
 		
 		private void UnregisterHandlers() {
@@ -68,8 +77,6 @@ namespace UI {
 			gameClientManager.OnReceiveMessage -= OnUpdateGameList;
 			gameClientManager.OnReceiveResponse -= OnChangeServer;
 			gameClientManager.OnReceiveMessage -= OnChangeServer;
-
-			playerCountSlider.onValueChanged.RemoveListener(OnPlayerCountChanged);
 		}
 
 		private void OnReceiveGameList(InsightMessageBase _message, CallbackStatus _status) {
@@ -146,15 +153,24 @@ namespace UI {
 			}
 		}
 
-		private void OnPlayerCountChanged(float _playerCount) {
-			playerCountText.text = $"Minimum player count : {_playerCount}";
+		private void OnMinPlayerCountChanged(float _playerCount) {
+			minPlayerCountText.text = $"Minimum player count : {_playerCount}";
+			maxPlayerCountSlider.minValue = _playerCount;
+		}
+		
+		private void OnMaxPlayerCountChanged(float _playerCount) {
+			maxPlayerCountText.text = $"Maximum player count : {_playerCount}";
+			minPlayerCountSlider.maxValue = _playerCount;
+
+			maxPlayers.Data = (int) _playerCount;
 		}
 
 		public void CreateGame() {
 			gameCreationButton.interactable = false;
 			gameClientManager.CreateGame(new CreateGameMsg {
 				gameName = gameNameText.text,
-				minPlayers = (int) playerCountSlider.value
+				minPlayers = (int) minPlayerCountSlider.value,
+				maxPlayers = (int) maxPlayerCountSlider.value
 			});
 			gameNameText.text = "";
 		}

@@ -35,7 +35,7 @@ namespace UI {
 		}
 
 		private void UpdateGUI() {
-			countText.text = $"{game.currentPlayers} / {game.minPlayers}";
+			countText.text = $"{game.currentPlayers} / {game.maxPlayers}";
 			gameObject.SetActive(!game.hasStarted && game.currentPlayers < game.maxPlayers);
 		}
 	}

@@ -8,10 +8,15 @@ namespace Common.TrackingLinker.Integer {
 		
 		protected override void Start() {
 			base.Start();
-			OnValueChange(netManager.maxConnections);
+			target.Data = netManager.maxConnections;
 		}
 
-		protected override void RegisterHandlers() {}
-		protected override void UnregisterHandlers() {}
+		protected override void RegisterHandlers() {
+			target.AddListener(_playerCount => netManager.maxConnections = _playerCount);
+		}
+
+		protected override void UnregisterHandlers() {
+			target.RemoveListener(_playerCount => netManager.maxConnections = _playerCount);
+		}
 	}
 }

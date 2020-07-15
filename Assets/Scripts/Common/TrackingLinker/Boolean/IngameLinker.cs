@@ -8,7 +8,7 @@ namespace Common.TrackingLinker.Boolean {
 		
 		protected override void Start() {
 			base.Start();
-			OnValueChange(gameClientManager.IsInGame);
+			target.Data = gameClientManager.IsInGame;
 		}
 
 		protected override void RegisterHandlers() {

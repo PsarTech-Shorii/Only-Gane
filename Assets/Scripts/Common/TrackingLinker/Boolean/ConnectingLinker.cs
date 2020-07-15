@@ -8,7 +8,7 @@ namespace Common.TrackingLinker.Boolean {
 		
 		protected override void Start() {
 			base.Start();
-			OnValueChange(transport.ClientConnected());
+			target.Data = transport.ClientConnected();
 		}
 
 		protected override void RegisterHandlers() {

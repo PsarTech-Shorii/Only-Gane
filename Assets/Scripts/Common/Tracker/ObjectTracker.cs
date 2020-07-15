@@ -1,9 +1,9 @@
 namespace Common.Tracker {
 	public class ObjectTracker<T> {
-		public delegate void TrackingEvent(T _newValue);
+		public delegate void Tracker(T _newValue);
 		
 		private T data;
-		private event TrackingEvent OnValueChanged;
+		private event Tracker OnValueChanged;
 
 		public T Data {
 			get => data;
@@ -13,11 +13,11 @@ namespace Common.Tracker {
 			}
 		}
 
-		public void AddListener(TrackingEvent _handler) {
+		public void AddListener(Tracker _handler) {
 			OnValueChanged += _handler;
 		}
 		
-		public void RemoveListener(TrackingEvent _handler) {
+		public void RemoveListener(Tracker _handler) {
 			OnValueChanged -= _handler;
 		}
 	}

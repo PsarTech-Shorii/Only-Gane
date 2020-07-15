@@ -9,11 +9,11 @@ namespace Common.Tracker {
 			set => objTracker.Data = value;
 		}
 
-		public void AddListener(ObjectTracker<T>.TrackingEvent _handler) {
+		public void AddListener(ObjectTracker<T>.Tracker _handler) {
 			objTracker.AddListener(_handler);
 		}
 		
-		public void RemoveListener(ObjectTracker<T>.TrackingEvent _handler) {
+		public void RemoveListener(ObjectTracker<T>.Tracker _handler) {
 			objTracker.RemoveListener(_handler);
 		}
 	}
