@@ -43,9 +43,9 @@ namespace Insight {
 		}
 		
 		private void StartClientWith(ConnectionDelegate _handler) {
-			if (client.IsConnected) {
+			/*if (client.IsConnected) {
 				_handler.Invoke();
-			}
+			}*/
 			
 			client.OnConnected += _handler;
 		}
