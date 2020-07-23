@@ -14,7 +14,7 @@ namespace Game {
 			base.OnStartServer();
 			InitializeServer();
 			
-			gameManager.SetMatchLeader();
+			gameManager.RegisterPlayer(connectionToClient);
 		}
 
 		[Server] private void InitializeServer() {
@@ -25,7 +25,7 @@ namespace Game {
 		[Server] public override void OnStopServer() {
 			base.OnStopServer();
 			
-			gameManager.SetMatchLeader();
+			gameManager.UnregisterPlayer(connectionToClient);
 		}
 	}
 }
