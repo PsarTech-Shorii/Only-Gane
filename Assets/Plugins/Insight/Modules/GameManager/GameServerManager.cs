@@ -25,6 +25,7 @@ namespace Insight {
 		private bool hasStarted;
 
 		[SerializeField] private float updateDelayInSeconds = 1;
+		[SerializeField] [Scene] private string ingameScene;
 
 		public override void Initialize(InsightClient _client, ModuleManager _manager) {
 			Debug.Log("[GameServerManager] - Initialization");
@@ -39,6 +40,7 @@ namespace Insight {
 
 			netManager.maxConnections = maxPlayers;
 			netManager.StartServer();
+			netManager.ServerChangeScene(ingameScene);
 		}
 
 		private void RegisterHandlers() {

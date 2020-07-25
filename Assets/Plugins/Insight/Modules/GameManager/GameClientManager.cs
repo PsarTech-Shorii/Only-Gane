@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace Insight {
 	public class GameClientManager : InsightModule {
@@ -17,6 +18,8 @@ namespace Insight {
 
 		[HideInInspector] public string uniqueId;
 		[HideInInspector] public List<GameContainer> gamesList = new List<GameContainer>();
+
+		[SerializeField] [Scene] private string lobbyScene;
 
 		public event GoInGame OnGoInGame;
 		public bool IsInGame {
@@ -66,10 +69,10 @@ namespace Insight {
 							.SetValue(transport, responseReceived.networkPort);
 					}
 
-					IsInGame = true;
-
 					netMananager.networkAddress = responseReceived.networkAddress;
 					netMananager.StartClient();
+					
+					IsInGame = true;
 					break;
 				}
 				case CallbackStatus.Error:
@@ -193,8 +196,10 @@ namespace Insight {
 			Debug.Log("[GameClient - Manager] - Leaving game"); 
 			
 			client.NetworkSend(new LeaveGameMsg{uniqueId = uniqueId});
-			IsInGame = false;
 			netMananager.StopClient();
+			SceneManager.LoadSceneAsync(lobbyScene);
+			
+			IsInGame = false;
 		}
 
 		#endregion

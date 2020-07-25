@@ -167,6 +167,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueId: 
   gamesList: []
+  lobbyScene: Assets/Scenes/Lobby.unity
 --- !u!114 &153207755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -414,8 +415,8 @@ MonoBehaviour:
   startOnHeadless: 1
   showDebugMessages: 0
   serverTickRate: 30
-  offlineScene: Assets/Scenes/Lobby.unity
-  onlineScene: Assets/Scenes/Game.unity
+  offlineScene: 
+  onlineScene: 
   transport: {fileID: 1240961651}
   networkAddress: localhost
   maxConnections: 8
@@ -504,7 +505,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1275437094
 MonoBehaviour:
@@ -618,7 +619,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1676022063
 GameObject:

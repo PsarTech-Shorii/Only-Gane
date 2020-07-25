@@ -233,6 +233,9 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   isMatchLeader: {fileID: 11400000, guid: 387d299718fcad93da0d98292a858e84, type: 2}
+  hasStartedGame: {fileID: 11400000, guid: 629097894f6630dfe866a159c785ef79, type: 2}
+  gameServerManagerRef: {fileID: 11400000, guid: 1b3ed6b37b08df6f08d8421c9f345c09,
+    type: 2}
 --- !u!114 &381383254
 MonoBehaviour:
   m_ObjectHideFlags: 0

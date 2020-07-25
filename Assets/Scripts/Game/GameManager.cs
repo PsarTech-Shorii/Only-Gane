@@ -6,13 +6,13 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Game {
-// public delegate void StartGameDelegate(bool _newValue);
+	public delegate void StartGameDelegate(bool _newValue);
 	
 	public class GameManager : NetworkBehaviour {
 		private GameServerManager gameServerManager;
 		private NetworkConnection matchLeaderConn;
 		
-		// [SyncEvent] public event StartGameDelegate StartGameEvent;
+		[SyncEvent] private event StartGameDelegate EventOnStartGame;
 
 		[Header("Output")] 
 		[SerializeField] private SO_Boolean isMatchLeader;
@@ -51,18 +51,23 @@ namespace Game {
 			if(NetworkServer.connections.Count > 0) AssignLeader(NetworkServer.connections.First().Value);
 		}
 
-		/*[Command(ignoreAuthority = true)] private void CmdStartGame() {
-			StartGameEvent?.Invoke(gameServerManager.StartGame());
-		}*/
+		[Command(ignoreAuthority = true)] private void CmdStartGame() {
+			EventOnStartGame?.Invoke(gameServerManager.StartGame());
+		}
 
 		#endregion
 
 		#region Client
 
-		/*public override void OnStartClient() {
+		[Client] public override void OnStartClient() {
 			base.OnStartClient();
-			StartGameEvent = OnStartGame;
-		}*/
+			EventOnStartGame = _newValue => {
+				Debug.Log($"[GameManager] - EventOnStartGame : {_newValue}");
+				if(hasStartedGame.Data != _newValue) hasStartedGame.Data = _newValue;
+			};
+		}
+		
+		[Client] public void StartGame() => CmdStartGame();
 
 		[TargetRpc] private void TargetAssignLeader(NetworkConnection _target) {
 			Debug.Log("[GameManager] - TargetAssignLeader");
@@ -75,12 +80,6 @@ namespace Game {
 			Assert.IsTrue(isMatchLeader.Data);
 			isMatchLeader.Data = false;
 		}
-
-		/*[Client] public void StartGame() => CmdStartGame();
-		[Client] private void OnStartGame(bool _newValue) {
-			Debug.Log($"[GameManager] - OnStartGame : {_newValue}");
-			if(hasStartedGame.Data != _newValue) hasStartedGame.Data = _newValue;
-		}*/
 
 		#endregion
 	}

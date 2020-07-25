@@ -166,6 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   updateDelayInSeconds: 1
+  ingameScene: Assets/Scenes/Game.unity
 --- !u!114 &481641721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,7 +273,7 @@ MonoBehaviour:
   showDebugMessages: 0
   serverTickRate: 30
   offlineScene: 
-  onlineScene: Assets/Scenes/Game.unity
+  onlineScene: 
   transport: {fileID: 1056213819}
   networkAddress: localhost
   maxConnections: 8

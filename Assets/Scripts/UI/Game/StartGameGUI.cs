@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 
 namespace UI {
 	public class StartGameGUI : MonoBehaviour {
-		/*private GameManager gameManager;
+		private GameManager gameManager;
 		[SerializeField] private SO_Object gameManagerRef;
 
 		private void Awake() {
@@ -13,6 +13,6 @@ namespace UI {
 			Assert.IsNotNull(gameManager);
 		}
 
-		public void StartGame() => gameManager.StartGame();*/
+		public void StartGame() => gameManager.StartGame();
 	}
 }
