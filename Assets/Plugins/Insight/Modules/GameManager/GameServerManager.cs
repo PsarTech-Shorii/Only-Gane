@@ -124,9 +124,11 @@ namespace Insight {
 			var startedText = hasStarted ? "started" : "not started";
 			Debug.Log($"[GameServerManager] - Updating game : {currentPlayers} players in the {startedText} game");
 			client.NetworkSend(new GameStatusMsg {
-				uniqueId = uniqueId,
-				currentPlayers = currentPlayers,
-				hasStarted = hasStarted
+				game = new GameContainer {
+					uniqueId = uniqueId,
+					currentPlayers = currentPlayers,
+					hasStarted = hasStarted
+				}
 			});
 		}
 

@@ -20,9 +20,8 @@ namespace UI {
 			UpdateGUI();
 		}
 
-		public void UpdatePlayerCount(GameStatusMsg _gameStatus) {
-			game.currentPlayers = _gameStatus.currentPlayers;
-			game.hasStarted = _gameStatus.hasStarted;
+		public void UpdatePlayerCount(GameContainer _game) {
+			game.Update(_game);
 			UpdateGUI();
 		}
 

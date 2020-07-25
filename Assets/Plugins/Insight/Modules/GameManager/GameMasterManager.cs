@@ -131,9 +131,9 @@ namespace Insight {
 
 			Debug.Log("[GameMaster - Manager] - Received game update");
 
-			var game = registeredGameServers.Find(_e => _e.uniqueId == message.uniqueId);
+			var game = registeredGameServers.Find(_e => _e.uniqueId == message.game.uniqueId);
 			Assert.IsNotNull(game);
-			game.currentPlayers = message.currentPlayers;
+			game.Update(message.game);
 			
 			foreach (var playerTemp in registeredPlayers) {
 				server.NetworkSend(playerTemp.connectionId, new GameListStatusMsg {
@@ -315,8 +315,14 @@ namespace Insight {
 		public string gameName;
 		public int minPlayers;
 		public int maxPlayers;
+		
 		public int currentPlayers;
 		public bool hasStarted;
+
+		public void Update(GameContainer _game) {
+			currentPlayers = _game.currentPlayers;
+			hasStarted = _game.hasStarted;
+		}
 	}
 	
 	[Serializable]

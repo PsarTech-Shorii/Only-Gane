@@ -104,7 +104,7 @@ namespace Insight {
 					break;
 				case GameListStatusMsg.Operation.Update:
 					var gameTemp = gamesList.Find(_game => _game.uniqueId == message.game.uniqueId);
-					gameTemp.currentPlayers = message.game.currentPlayers;
+					gameTemp.Update(message.game);
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();

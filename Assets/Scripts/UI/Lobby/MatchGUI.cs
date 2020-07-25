@@ -117,11 +117,7 @@ namespace UI {
 					var gameJoinerObject = gameJoiners.Find(_e =>
 						_e.GetComponent<GameJoinerGUI>().Is(message.game.uniqueId));
 					
-					gameJoinerObject.GetComponent<GameJoinerGUI>().UpdatePlayerCount(new GameStatusMsg {
-							currentPlayers = message.game.currentPlayers,
-							hasStarted = message.game.hasStarted
-						}
-					);
+					gameJoinerObject.GetComponent<GameJoinerGUI>().UpdatePlayerCount(message.game);
 					break;
 				}
 				default:
