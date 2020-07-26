@@ -46,6 +46,12 @@ namespace Insight {
 
 			client.RegisterHandler<ChangeServerMsg>(HandleChangeServersMsg);
 			client.RegisterHandler<GameListStatusMsg>(HandleGameListStatutMsg);
+			
+			transport.OnClientDisconnected.AddListener(() => IsInGame = false);
+
+			OnGoInGame += _newValue => {
+				if(!_newValue) SceneManager.LoadSceneAsync(lobbyScene);
+			};
 		}
 
 		#region Handler
@@ -197,8 +203,7 @@ namespace Insight {
 			
 			client.NetworkSend(new LeaveGameMsg{uniqueId = uniqueId});
 			netMananager.StopClient();
-			SceneManager.LoadSceneAsync(lobbyScene);
-			
+
 			IsInGame = false;
 		}
 
