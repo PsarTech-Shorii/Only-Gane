@@ -5,31 +5,29 @@ using UnityEngine.Assertions;
 
 namespace Game {
 	public class Player : NetworkBehaviour {
-		private GameManager gameManager;
-
-		[Header("Module")]
-		[SerializeField] private SO_Object gameManagerRef;
-
-
 		#region Server
 
+		private GameCoreManager gameCoreManager;
+
+		[Header("Module")]
+		[SerializeField] private SO_Object gameCoreManagerRef;
+
+		[Server] private void Initilize() {
+			gameCoreManager = (GameCoreManager) gameCoreManagerRef.Data;
+			Assert.IsNotNull(gameCoreManager);
+		}
+		
 		[Server] public override void OnStartServer() {
 			base.OnStartServer();
-			InitializeServer();
-
-			gameManager.netIdentity.AssignClientAuthority(connectionToClient);
-			gameManager.RegisterPlayer(connectionToClient);
+			Initilize();
+			
+			gameCoreManager.RegisterPlayer(connectionToClient);
 		}
 
-		[Server] private void InitializeServer() {
-			gameManager = (GameManager) gameManagerRef.Data;
-			Assert.IsNotNull(gameManager);
-		}
-
-		[Server] public override void OnStopServer() {
+		public override void OnStopServer() {
 			base.OnStopServer();
-
-			gameManager.UnregisterPlayer(connectionToClient);
+			
+			gameCoreManager.UnregisterPlayer(connectionToClient);
 		}
 
 		#endregion

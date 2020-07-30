@@ -16,7 +16,7 @@ namespace UI {
 		private ClientMatchMaker clientMatchMaker;
 
 		[Header("Module")]
-		[SerializeField] private SO_Object clientGameManagerRef;
+		[SerializeField] private SO_Object gameClientManagerRef;
 		[SerializeField] private SO_Object clientMatchMakerRef;
 		[SerializeField] private SO_Integer maxPlayers;
 
@@ -39,7 +39,7 @@ namespace UI {
 		[SerializeField] private Slider maxPlayerCountSlider;
 
 		private void Awake() {
-			gameClientManager = (GameClientManager) clientGameManagerRef.Data;
+			gameClientManager = (GameClientManager) gameClientManagerRef.Data;
 			Assert.IsNotNull(gameClientManager);
 
 			clientMatchMaker = (ClientMatchMaker) clientMatchMakerRef.Data;

@@ -6,12 +6,9 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Game {
-	public delegate void StartGameDelegate(bool _newValue);
+	public delegate void StartGameDelegate();
 
-	public class GameManager : NetworkBehaviour {
-		private GameServerManager gameServerManager;
-		private NetworkConnection matchLeaderConn;
-
+	public class GameCoreManager : NetworkBehaviour {
 		[SyncEvent] private event StartGameDelegate EventOnStartGame;
 
 		[Header("Output")] 
@@ -21,40 +18,66 @@ namespace Game {
 		[Header("Module")] 
 		[SerializeField] private SO_Object gameServerManagerRef;
 
-		#region Core
+		#region Common
 
+		private void Awake() {
+			hasStartedGame.Data = false;
+		}
+
+		private void OnStartGame() {
+			Debug.Log($"[GameCoreManager] - OnStartGame");
+			hasStartedGame.Data = true;
+		}
+
+		#endregion
+		
 		#region Server
 
+		private GameServerManager gameServerManager;
+		private NetworkConnection matchLeaderConn;
+		
+		
 		[Server] public override void OnStartServer() {
 			base.OnStartServer();
+			Debug.Log("[GameCoreManager] - OnStartServer");
+			
 			gameServerManager = (GameServerManager) gameServerManagerRef.Data;
 			Assert.IsNotNull(gameServerManager);
+			
+			NetworkServer.RegisterHandler<StartGameMsg>(_ => StartGame());
 		}
 
 		[Server] public void RegisterPlayer(NetworkConnection _connection) {
+			Debug.Log("[GameCoreManager] - RegisterPlayer");
 			AssignLeader(_connection);
 		}
 
 		[Server] public void UnregisterPlayer(NetworkConnection _connection) {
-			if (matchLeaderConn != _connection) return;
+			Debug.Log("[GameCoreManager] - UnregisterPlayer");
 			UnassignLeader(_connection);
 		}
 
 		[Server] private void AssignLeader(NetworkConnection _connection) {
 			if (matchLeaderConn != null) return;
 
+			Debug.Log("[GameCoreManager] - AssignLeader");
 			TargetAssignLeader(_connection);
 			matchLeaderConn = _connection;
 		}
 
 		[Server] private void UnassignLeader(NetworkConnection _connection) {
-			TargetUnassignLeader(_connection);
+			if (matchLeaderConn != _connection) return;
+			
+			Debug.Log("[GameCoreManager] - UnassignLeader");
 			matchLeaderConn = null;
 			if (NetworkServer.connections.Count > 0) AssignLeader(NetworkServer.connections.First().Value);
 		}
 
-		[Command] private void CmdStartGame() {
-			EventOnStartGame?.Invoke(gameServerManager.StartGame());
+		[Server] private void StartGame() {
+			if(!gameServerManager.StartGame()) return;
+			
+			EventOnStartGame?.Invoke();
+			OnStartGame();
 		}
 
 		#endregion
@@ -63,27 +86,15 @@ namespace Game {
 
 		[Client] public override void OnStartClient() {
 			base.OnStartClient();
-			EventOnStartGame = _newValue => {
-				Debug.Log($"[GameManager] - EventOnStartGame : {_newValue}");
-				if (hasStartedGame.Data != _newValue) hasStartedGame.Data = _newValue;
-			};
+			
+			EventOnStartGame = OnStartGame;
 		}
 
-		[Client] public void StartGame() => CmdStartGame();
-
 		[TargetRpc] private void TargetAssignLeader(NetworkConnection _target) {
-			Debug.Log("[GameManager] - TargetAssignLeader");
+			Debug.Log("[GameCoreManager] - TargetAssignLeader");
 			Assert.IsFalse(isMatchLeader.Data);
 			isMatchLeader.Data = true;
 		}
-
-		[TargetRpc] private void TargetUnassignLeader(NetworkConnection _target) {
-			Debug.Log("[GameManager] - TargetUnassignLeader");
-			Assert.IsTrue(isMatchLeader.Data);
-			isMatchLeader.Data = false;
-		}
-
-		#endregion
 
 		#endregion
 	}

@@ -19,8 +19,6 @@ namespace Insight {
 		[HideInInspector] public string uniqueId;
 		[HideInInspector] public List<GameContainer> gamesList = new List<GameContainer>();
 
-		[SerializeField] [Scene] private string lobbyScene;
-
 		public event GoInGame OnGoInGame;
 		public bool IsInGame {
 			get => isInGame;
@@ -50,7 +48,8 @@ namespace Insight {
 			transport.OnClientDisconnected.AddListener(() => IsInGame = false);
 
 			OnGoInGame += _newValue => {
-				if(!_newValue) SceneManager.LoadSceneAsync(lobbyScene);
+				if (_newValue) netMananager.StartClient();
+				else netMananager.StopClient();
 			};
 		}
 
@@ -76,9 +75,8 @@ namespace Insight {
 					}
 
 					netMananager.networkAddress = responseReceived.networkAddress;
-					netMananager.StartClient();
-					
 					IsInGame = true;
+					
 					break;
 				}
 				case CallbackStatus.Error:
@@ -202,8 +200,6 @@ namespace Insight {
 			Debug.Log("[GameClient - Manager] - Leaving game"); 
 			
 			client.NetworkSend(new LeaveGameMsg{uniqueId = uniqueId});
-			netMananager.StopClient();
-
 			IsInGame = false;
 		}
 

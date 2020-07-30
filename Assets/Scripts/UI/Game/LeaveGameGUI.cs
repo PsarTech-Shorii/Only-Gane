@@ -10,10 +10,10 @@ namespace UI {
 		private Button button;
 		
 		[Header("Module")]
-		[SerializeField] private SO_Object clientGameManagerRef;
+		[SerializeField] private SO_Object gameClientManagerRef;
 
 		private void Awake() {
-			gameClientManager = (GameClientManager) clientGameManagerRef.Data;
+			gameClientManager = (GameClientManager) gameClientManagerRef.Data;
 			Assert.IsNotNull(gameClientManager);
 
 			button = GetComponent<Button>();

@@ -167,7 +167,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueId: 
   gamesList: []
-  lobbyScene: Assets/Scenes/Lobby.unity
 --- !u!114 &153207755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -415,8 +414,8 @@ MonoBehaviour:
   startOnHeadless: 1
   showDebugMessages: 0
   serverTickRate: 30
-  offlineScene: 
-  onlineScene: 
+  offlineScene: Assets/Scenes/Lobby.unity
+  onlineScene: Assets/Scenes/Game.unity
   transport: {fileID: 1240961651}
   networkAddress: localhost
   maxConnections: 8
@@ -427,7 +426,8 @@ MonoBehaviour:
     type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 1
-  spawnPrefabs: []
+  spawnPrefabs:
+  - {fileID: 7446042526367708384, guid: 857922d83cb391ddebaa59db68ff9671, type: 3}
 --- !u!4 &1240961653
 Transform:
   m_ObjectHideFlags: 0
