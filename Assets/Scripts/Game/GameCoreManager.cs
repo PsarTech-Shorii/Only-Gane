@@ -7,6 +7,7 @@ using UnityEngine.Assertions;
 
 namespace Game {
 	public delegate void StartGameDelegate();
+	public class StartGameMsg : MessageBase {}
 
 	public class GameCoreManager : NetworkBehaviour {
 		[SyncEvent] private event StartGameDelegate EventOnStartGame;

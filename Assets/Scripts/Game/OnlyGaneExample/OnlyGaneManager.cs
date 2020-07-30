@@ -3,6 +3,9 @@ using ScriptableObjects;
 using UnityEngine;
 
 namespace Game.OnlyGaneExample {
+	public abstract class ControllMsg : MessageBase {}
+	public class MoveBellMsg : ControllMsg {}
+
 	public class OnlyGaneManager : NetworkBehaviour {
 		[Header("Prefabs")]
 		[SerializeField] private GameObject playerAvatarPrefab;
