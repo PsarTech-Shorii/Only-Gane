@@ -1,3 +1,4 @@
+using System;
 using Mirror;
 using ScriptableObjects;
 using UnityEngine;
@@ -12,6 +13,12 @@ namespace Game.OnlyGaneExample {
 
 		[Header("Module")]
 		[SerializeField] private SO_Boolean hasStartedGame;
+		// [SerializeField] private SO_Integer winnerNetId;
+
+		/*private void Awake() {
+			winnerNetId.Data = 0;
+		}
+		*/
 
 		#region Server
 

@@ -11,26 +11,20 @@ namespace Game.OnlyGaneExample {
 			playerRb = GetComponent<Rigidbody2D>();
 		}
 
-		private void Update() {
-			if(!hasAuthority) return;
-			
-			JumpController();
-		}
-		
-		private void FixedUpdate() {
-			if(!isServer) return;
-			
-			JumpPhysic();
-		}
-
 		#region Server
 
-		private const float JumpForce = 50f;
+		private const float JumpForce = 30f;
 		private const float JumpCooldown = 1f;
 
 		private Vector2 jumpDirection;
 		private bool canJump = true;
 
+		private void FixedUpdate() {
+			if(!isServer) return;
+			
+			JumpPhysic();
+		}
+		
 		[Command] private void CmdJump(Vector2 _jumpDirection) {
 			if(!canJump) return;
 
@@ -58,6 +52,13 @@ namespace Game.OnlyGaneExample {
 
 		private Camera mainCamera;
 
+		private void Update() {
+			if(!hasAuthority) return;
+			
+			JumpController();
+			MoveBellController();
+		}
+		
 		[Client] public override void OnStartClient() {
 			base.OnStartClient();
 			playerRb.isKinematic = true;
@@ -79,6 +80,12 @@ namespace Game.OnlyGaneExample {
 			}
 		}
 
+		[Client] private void MoveBellController() {
+			if (Input.GetKeyDown(KeyCode.Mouse1)) {
+				NetworkClient.Send(new MoveBellMsg());
+			}
+		}
+
 		[Client] private static Vector2 GetBalancedMousePosition() {
 			var mousePosition = Input.mousePosition;
 			var viewportMousePosition = new Vector2 {
@@ -89,7 +96,7 @@ namespace Game.OnlyGaneExample {
 			return viewportMousePosition - new Vector2(0.5f, 0.5f);
 		}
 
-		private Vector2 GetBalancedSelfPosition() {
+		[Client] private Vector2 GetBalancedSelfPosition() {
 			var viewportPosition = (Vector2) mainCamera.WorldToViewportPoint(transform.position);
 			
 			return viewportPosition - new Vector2(0.5f, 0.5f);
