@@ -145,7 +145,7 @@ namespace Insight {
 	public class GameStatusMsg : InsightMessageBase {
 		/*public string uniqueId; //Guid
 		public int currentPlayers;
-		public bool hasStarted;*/
+		public bool isStarted;*/
 		public GameContainer game;
 	}
 	

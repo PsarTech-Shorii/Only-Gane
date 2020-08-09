@@ -6,15 +6,12 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Game {
-	public delegate void StartGameDelegate();
 	public class StartGameMsg : MessageBase {}
 
 	public class GameCoreManager : NetworkBehaviour {
-		[SyncEvent] private event StartGameDelegate EventOnStartGame;
-
 		[Header("Output")] 
 		[SerializeField] private SO_Boolean isMatchLeader;
-		[SerializeField] private SO_Boolean hasStartedGame;
+		[SerializeField] private SO_Boolean isStartedGame;
 
 		[Header("Module")] 
 		[SerializeField] private SO_Object gameServerManagerRef;
@@ -22,12 +19,7 @@ namespace Game {
 		#region Common
 
 		private void Awake() {
-			hasStartedGame.Data = false;
-		}
-
-		private void OnStartGame() {
-			Debug.Log($"[GameCoreManager] - OnStartGame");
-			hasStartedGame.Data = true;
+			isStartedGame.Data = false;
 		}
 
 		#endregion
@@ -36,8 +28,7 @@ namespace Game {
 
 		private GameServerManager gameServerManager;
 		private NetworkConnection matchLeaderConn;
-		
-		
+
 		[Server] public override void OnStartServer() {
 			base.OnStartServer();
 			Debug.Log("[GameCoreManager] - OnStartServer");
@@ -76,19 +67,28 @@ namespace Game {
 
 		[Server] private void StartGame() {
 			if(!gameServerManager.StartGame()) return;
+
+			isStartedGame.Data = true;
+			RpcStartGame();
+		}
+
+		[Server] public void StopGame() {
+			isStartedGame.Data = false;
+			RpcStopGame();
 			
-			EventOnStartGame?.Invoke();
-			OnStartGame();
+			gameServerManager.StopGame();
 		}
 
 		#endregion
 
 		#region Client
 
-		[Client] public override void OnStartClient() {
-			base.OnStartClient();
-			
-			EventOnStartGame = OnStartGame;
+		[ClientRpc] private void RpcStartGame() {
+			isStartedGame.Data = true;
+		}
+
+		[ClientRpc] private void RpcStopGame() {
+			isStartedGame.Data = false;
 		}
 
 		[TargetRpc] private void TargetAssignLeader(NetworkConnection _target) {

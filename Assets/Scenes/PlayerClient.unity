@@ -415,7 +415,7 @@ MonoBehaviour:
   showDebugMessages: 0
   serverTickRate: 30
   offlineScene: Assets/Scenes/Lobby.unity
-  onlineScene: Assets/Scenes/Game.unity
+  onlineScene: Assets/Scenes/GameBase.unity
   transport: {fileID: 1240961651}
   networkAddress: localhost
   maxConnections: 8

@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 381383256}
   - component: {fileID: 381383254}
   - component: {fileID: 381383255}
+  - component: {fileID: 381383257}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -170,7 +171,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   isMatchLeader: {fileID: 11400000, guid: 387d299718fcad93da0d98292a858e84, type: 2}
-  hasStartedGame: {fileID: 11400000, guid: 629097894f6630dfe866a159c785ef79, type: 2}
+  isStartedGame: {fileID: 11400000, guid: 629097894f6630dfe866a159c785ef79, type: 2}
   gameServerManagerRef: {fileID: 11400000, guid: 1b3ed6b37b08df6f08d8421c9f345c09,
     type: 2}
 --- !u!114 &381383254
@@ -219,7 +220,23 @@ MonoBehaviour:
   syncInterval: 0.1
   playerAvatarPrefab: {fileID: 7446042526367708384, guid: 857922d83cb391ddebaa59db68ff9671,
     type: 3}
-  hasStartedGame: {fileID: 11400000, guid: 629097894f6630dfe866a159c785ef79, type: 2}
+  isStartedGame: {fileID: 11400000, guid: 629097894f6630dfe866a159c785ef79, type: 2}
+  isMatchWinner: {fileID: 11400000, guid: 17aed1325a6c644ac866816b90781f5c, type: 2}
+  gameCoreManagerRef: {fileID: 11400000, guid: 259e82382d6c36a1d8b1992bb6f62afd, type: 2}
+--- !u!114 &381383257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381383251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a734af2cfbc54531af76641e88acaa9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objRef: {fileID: 11400000, guid: 9f770510c65aee294bff0ad5b02077ff, type: 2}
+  obj: {fileID: 381383256}
 --- !u!1 &573112451
 GameObject:
   m_ObjectHideFlags: 0
@@ -694,6 +711,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  onlyGaneManagerRef: {fileID: 11400000, guid: 9f770510c65aee294bff0ad5b02077ff, type: 2}
 --- !u!1 &1678280938
 GameObject:
   m_ObjectHideFlags: 0

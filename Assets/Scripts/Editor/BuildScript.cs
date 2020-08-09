@@ -47,7 +47,7 @@ namespace Editor {
 		private static void BuildGameServer() {
 			string[] gameServerScenes = {
 				Settings.ScenesRoot + "GameServer.unity",
-				Settings.ScenesRoot + "Game.unity"
+				Settings.ScenesRoot + "GameBase.unity"
 			};
 			PlayerSettings.productName = "GameServer";
 			BuildPipeline.BuildPlayer(gameServerScenes, Settings.BuildPath + "GameServer/GameServer" + 
@@ -58,7 +58,7 @@ namespace Editor {
 			string[] scenes = {
 				Settings.ScenesRoot + "PlayerClient.unity",
 				Settings.ScenesRoot + "Lobby.unity",
-				Settings.ScenesRoot + "Game.unity",
+				Settings.ScenesRoot + "GameBase.unity",
 				Settings.ScenesRoot + "GameGUI.unity"
 			};
 			PlayerSettings.productName = "PlayerClient";

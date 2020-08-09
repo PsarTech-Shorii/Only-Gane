@@ -1,11 +1,15 @@
 using System.Collections;
 using Mirror;
+using ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Game.OnlyGaneExample {
 	public class PlayerController : NetworkBehaviour {
 		private Rigidbody2D playerRb;
+		
+		[Header("Input")]
+		[SerializeField] private SO_Boolean isStartedGame;
 
 		private void Awake() {
 			playerRb = GetComponent<Rigidbody2D>();
@@ -18,6 +22,16 @@ namespace Game.OnlyGaneExample {
 
 		private Vector2 jumpDirection;
 		private bool canJump = true;
+
+		[Server] public override void OnStartServer() {
+			base.OnStartServer();
+			
+			Assert.IsTrue(isStartedGame.Data);
+			
+			isStartedGame.AddListener(_newValue => {
+				if(!_newValue) NetworkServer.Destroy(gameObject);
+			});
+		}
 
 		private void FixedUpdate() {
 			if(!isServer) return;

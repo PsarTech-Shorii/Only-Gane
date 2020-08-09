@@ -317,11 +317,11 @@ namespace Insight {
 		public int maxPlayers;
 		
 		public int currentPlayers;
-		public bool hasStarted;
+		public bool isStarted;
 
 		public void Update(GameContainer _game) {
 			currentPlayers = _game.currentPlayers;
-			hasStarted = _game.hasStarted;
+			isStarted = _game.isStarted;
 		}
 	}
 	

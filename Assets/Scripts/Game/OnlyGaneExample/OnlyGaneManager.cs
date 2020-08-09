@@ -1,7 +1,7 @@
-using System;
 using Mirror;
 using ScriptableObjects;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Game.OnlyGaneExample {
 	public abstract class ControllMsg : MessageBase {}
@@ -11,26 +11,33 @@ namespace Game.OnlyGaneExample {
 		[Header("Prefabs")]
 		[SerializeField] private GameObject playerAvatarPrefab;
 
-		[Header("Module")]
-		[SerializeField] private SO_Boolean hasStartedGame;
-		// [SerializeField] private SO_Integer winnerNetId;
+		[Header("Input")]
+		[SerializeField] private SO_Boolean isStartedGame;
+		
+		[Header("Output")]
+		[SerializeField] private SO_Boolean isMatchWinner;
 
-		/*private void Awake() {
-			winnerNetId.Data = 0;
-		}
-		*/
+		[Header("Module")]
+		[SerializeField] private SO_Object gameCoreManagerRef;
 
 		#region Server
 
+		private GameCoreManager gameCoreManager;
+		
 		[Server] public override void OnStartServer() {
 			base.OnStartServer();
-
-			hasStartedGame.AddListener(_newValue => {
+			
+			gameCoreManager = (GameCoreManager) gameCoreManagerRef.Data;
+			Assert.IsNotNull(gameCoreManager);
+			
+			isStartedGame.AddListener(_newValue => {
 				if(_newValue) StartGame();
 			});
 		}
 
 		[Server] private void StartGame() {
+			RpcStartGame();
+			
 			SpawnPlayers();
 		}
 
@@ -51,6 +58,23 @@ namespace Game.OnlyGaneExample {
 				
 				i++;
 			}
+		}
+
+		[Server] public void FinishGame(NetworkConnection _winnerConn) {
+			TargetAssignWinner(_winnerConn);
+			gameCoreManager.StopGame();
+		}
+
+		#endregion
+
+		#region Client
+
+		[ClientRpc] private void RpcStartGame() {
+			isMatchWinner.Data = false;
+		}
+		
+		[TargetRpc] private void TargetAssignWinner(NetworkConnection _target) {
+			isMatchWinner.Data = true;
 		}
 
 		#endregion
