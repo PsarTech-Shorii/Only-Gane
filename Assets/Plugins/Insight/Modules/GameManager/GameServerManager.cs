@@ -21,7 +21,7 @@ namespace Insight {
 		private int minPlayers;
 		private int maxPlayers;
 		private int currentPlayers;
-		private bool isStarted;
+		private bool isInMatch;
 
 		[SerializeField] private float updateDelayInSeconds = 1;
 
@@ -118,13 +118,13 @@ namespace Insight {
 
 			currentPlayers = NetworkServer.connections.Count;
 			
-			var startedText = isStarted ? "started" : "not started";
-			Debug.Log($"[GameServerManager] - Updating game : {currentPlayers} players in the {startedText} game");
+			var inMatchText = isInMatch ? "in" : "out";
+			Debug.Log($"[GameServerManager] - Updating game : {currentPlayers} players in game {inMatchText} match");
 			client.NetworkSend(new GameStatusMsg {
 				game = new GameContainer {
 					uniqueId = uniqueId,
 					currentPlayers = currentPlayers,
-					isStarted = isStarted
+					isInMatch = isInMatch
 				}
 			});
 		}
@@ -132,13 +132,13 @@ namespace Insight {
 		public bool StartGame() {
 			if (netManager.numPlayers < minPlayers) return false;
 			
-			isStarted = true;
+			isInMatch = true;
 			GameUpdate();
 			return true;
 		}
 
 		public void StopGame() {
-			isStarted = false;
+			isInMatch = false;
 			GameUpdate();
 		}
 

@@ -9,7 +9,7 @@ namespace Editor {
 		public static void BuildAllMenu() {
 			if (!string.IsNullOrEmpty(Settings.BuildPath)) {
 				BuildMasterServer();
-				// BuildRemoteSpawner();
+				BuildRemoteSpawner();
 				BuildGameServer();
 				BuildPlayerClient();
 			}

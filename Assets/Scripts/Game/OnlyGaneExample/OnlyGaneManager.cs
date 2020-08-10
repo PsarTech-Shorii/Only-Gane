@@ -12,7 +12,7 @@ namespace Game.OnlyGaneExample {
 		[SerializeField] private GameObject playerAvatarPrefab;
 
 		[Header("Input")]
-		[SerializeField] private SO_Boolean isStartedGame;
+		[SerializeField] private SO_Boolean isInMatch;
 		
 		[Header("Output")]
 		[SerializeField] private SO_Boolean isMatchWinner;
@@ -30,17 +30,17 @@ namespace Game.OnlyGaneExample {
 			gameCoreManager = (GameCoreManager) gameCoreManagerRef.Data;
 			Assert.IsNotNull(gameCoreManager);
 			
-			isStartedGame.AddListener(StartGame);
+			isInMatch.AddListener(StartGame);
 		}
 
 		[Server] public override void OnStopServer() {
 			base.OnStopServer();
 			
-			isStartedGame.RemoveListener(StartGame);
+			isInMatch.RemoveListener(StartGame);
 		}
 
-		[Server] private void StartGame(bool _isStarted) {
-			if(!_isStarted) return;
+		[Server] private void StartGame(bool _isInMatch) {
+			if(!_isInMatch) return;
 			
 			RpcStartGame();
 			

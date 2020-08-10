@@ -9,7 +9,7 @@ namespace Game.OnlyGaneExample {
 		private Rigidbody2D playerRb;
 		
 		[Header("Input")]
-		[SerializeField] private SO_Boolean isStartedGame;
+		[SerializeField] private SO_Boolean isInMatch;
 
 		private void Awake() {
 			playerRb = GetComponent<Rigidbody2D>();
@@ -32,17 +32,17 @@ namespace Game.OnlyGaneExample {
 		[Server] public override void OnStartServer() {
 			base.OnStartServer();
 			
-			Assert.IsTrue(isStartedGame.Data);
+			Assert.IsTrue(isInMatch.Data);
 			
-			isStartedGame.AddListener(FinishGame);
+			isInMatch.AddListener(FinishGame);
 		}
 
 		[Server] public override void OnStopServer() {
 			base.OnStopServer();
 			
-			Assert.IsFalse(isStartedGame.Data);
+			Assert.IsFalse(isInMatch.Data);
 			
-			isStartedGame.RemoveListener(FinishGame);
+			isInMatch.RemoveListener(FinishGame);
 		}
 
 		[Server] private void FinishGame(bool _isIngame) {

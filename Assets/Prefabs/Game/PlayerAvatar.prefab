@@ -267,7 +267,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  isStartedGame: {fileID: 11400000, guid: 629097894f6630dfe866a159c785ef79, type: 2}
+  isInMatch: {fileID: 11400000, guid: 629097894f6630dfe866a159c785ef79, type: 2}
 --- !u!114 &8477361029949960294
 MonoBehaviour:
   m_ObjectHideFlags: 0

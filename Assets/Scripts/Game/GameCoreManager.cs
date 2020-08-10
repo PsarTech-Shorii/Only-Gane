@@ -11,7 +11,7 @@ namespace Game {
 	public class GameCoreManager : NetworkBehaviour {
 		[Header("Output")] 
 		[SerializeField] private SO_Boolean isMatchLeader;
-		[SerializeField] private SO_Boolean isStartedGame;
+		[SerializeField] private SO_Boolean isInMatch;
 
 		[Header("Module")] 
 		[SerializeField] private SO_Object gameServerManagerRef;
@@ -19,7 +19,7 @@ namespace Game {
 		#region Common
 
 		private void Awake() {
-			isStartedGame.Data = false;
+			isInMatch.Data = false;
 		}
 
 		#endregion
@@ -68,12 +68,12 @@ namespace Game {
 		[Server] private void StartGame() {
 			if(!gameServerManager.StartGame()) return;
 
-			isStartedGame.Data = true;
+			isInMatch.Data = true;
 			RpcStartGame();
 		}
 
 		[Server] public void StopGame() {
-			isStartedGame.Data = false;
+			isInMatch.Data = false;
 			RpcStopGame();
 			
 			gameServerManager.StopGame();
@@ -84,11 +84,11 @@ namespace Game {
 		#region Client
 
 		[ClientRpc] private void RpcStartGame() {
-			isStartedGame.Data = true;
+			isInMatch.Data = true;
 		}
 
 		[ClientRpc] private void RpcStopGame() {
-			isStartedGame.Data = false;
+			isInMatch.Data = false;
 		}
 
 		[TargetRpc] private void TargetAssignLeader(NetworkConnection _target) {
