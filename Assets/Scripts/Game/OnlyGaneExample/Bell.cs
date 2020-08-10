@@ -23,8 +23,6 @@ namespace Game.OnlyGaneExample {
 			if(!isServer) return;
 
 			if (_other.gameObject.CompareTag("Player")) {
-				Debug.Log("[Bell] - FinishGame !");
-				
 				var winnerConn = _other.gameObject.GetComponent<NetworkIdentity>().connectionToClient;
 				onlyGaneManager.FinishGame(winnerConn);
 
@@ -45,6 +43,7 @@ namespace Game.OnlyGaneExample {
 
 		[Server] private void ResetGame() {
 			transform.position = initialPosition;
+			RpcMove(initialPosition);
 		}
 
 		[Server] private void Move() {
