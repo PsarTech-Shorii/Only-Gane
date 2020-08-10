@@ -1,3 +1,4 @@
+using System;
 using Mirror;
 using ScriptableObjects;
 using UnityEngine;
@@ -12,6 +13,8 @@ namespace Game.OnlyGaneExample {
 		#region Server
 
 		private OnlyGaneManager onlyGaneManager;
+
+		private Vector2 initialPosition;
 		
 		private const float VerticalBound = 9f;
 		private const float HorizontalBound = 10f;
@@ -24,6 +27,8 @@ namespace Game.OnlyGaneExample {
 				
 				var winnerConn = _other.gameObject.GetComponent<NetworkIdentity>().connectionToClient;
 				onlyGaneManager.FinishGame(winnerConn);
+
+				ResetGame();
 			}
 		}
 		
@@ -32,8 +37,14 @@ namespace Game.OnlyGaneExample {
 			
 			onlyGaneManager = (OnlyGaneManager) onlyGaneManagerRef.Data;
 			Assert.IsNotNull(onlyGaneManager);
+
+			initialPosition = transform.position;
 			
 			NetworkServer.RegisterHandler<MoveBellMsg>(_ => Move());
+		}
+
+		[Server] private void ResetGame() {
+			transform.position = initialPosition;
 		}
 
 		[Server] private void Move() {

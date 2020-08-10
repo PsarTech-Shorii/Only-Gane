@@ -30,12 +30,18 @@ namespace Game.OnlyGaneExample {
 			gameCoreManager = (GameCoreManager) gameCoreManagerRef.Data;
 			Assert.IsNotNull(gameCoreManager);
 			
-			isStartedGame.AddListener(_newValue => {
-				if(_newValue) StartGame();
-			});
+			isStartedGame.AddListener(StartGame);
 		}
 
-		[Server] private void StartGame() {
+		[Server] public override void OnStopServer() {
+			base.OnStopServer();
+			
+			isStartedGame.RemoveListener(StartGame);
+		}
+
+		[Server] private void StartGame(bool _isStarted) {
+			if(!_isStarted) return;
+			
 			RpcStartGame();
 			
 			SpawnPlayers();

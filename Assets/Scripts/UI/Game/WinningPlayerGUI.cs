@@ -13,9 +13,15 @@ namespace UI {
 		}
 
 		private void Start() {
-			isMatchWinner.AddListener(_newValue => {
-				text.text = _newValue ? "You won !" : "You lost...";
-			});
+			isMatchWinner.AddListener(OnFinishGame);
+		}
+
+		private void OnDestroy() {
+			isMatchWinner.RemoveListener(OnFinishGame);
+		}
+
+		private void OnFinishGame(bool _winValue) {
+			text.text = _winValue ? "You won !" : "You lost...";
 		}
 	}
 }

@@ -23,22 +23,44 @@ namespace Game.OnlyGaneExample {
 		private Vector2 jumpDirection;
 		private bool canJump = true;
 
-		[Server] public override void OnStartServer() {
-			base.OnStartServer();
-			
-			Assert.IsTrue(isStartedGame.Data);
-			
-			isStartedGame.AddListener(_newValue => {
-				if(!_newValue) NetworkServer.Destroy(gameObject);
-			});
-		}
-
 		private void FixedUpdate() {
 			if(!isServer) return;
 			
 			JumpPhysic();
 		}
-		
+
+		[Server] public override void OnStartServer() {
+			base.OnStartServer();
+			
+			Assert.IsTrue(isStartedGame.Data);
+			
+			isStartedGame.AddListener(FinishGame);
+		}
+
+		[Server] public override void OnStopServer() {
+			base.OnStopServer();
+			
+			Assert.IsFalse(isStartedGame.Data);
+			
+			isStartedGame.RemoveListener(FinishGame);
+		}
+
+		[Server] private void FinishGame(bool _isIngame) {
+			if(!_isIngame) NetworkServer.Destroy(gameObject);
+		}
+
+		[Server] private void JumpPhysic() {
+			if(jumpDirection == Vector2.zero) return;
+			
+			playerRb.AddForce(jumpDirection * JumpForce, ForceMode2D.Impulse);
+			jumpDirection = Vector2.zero;
+		}
+
+		[Server] private IEnumerator WaitJumpCooldownCor() {
+			yield return new WaitForSeconds(JumpCooldown);
+			canJump = true;
+		}
+
 		[Command] private void CmdJump(Vector2 _jumpDirection) {
 			if(!canJump) return;
 
@@ -48,18 +70,6 @@ namespace Game.OnlyGaneExample {
 			StartCoroutine(WaitJumpCooldownCor());
 		}
 
-		[Server] private void JumpPhysic() {
-			if(jumpDirection == Vector2.zero) return;
-			
-			playerRb.AddForce(jumpDirection * JumpForce, ForceMode2D.Impulse);
-			jumpDirection = Vector2.zero;
-		}
-		
-		[Server] private IEnumerator WaitJumpCooldownCor() {
-			yield return new WaitForSeconds(JumpCooldown);
-			canJump = true;
-		}
-		
 		#endregion
 
 		#region Client

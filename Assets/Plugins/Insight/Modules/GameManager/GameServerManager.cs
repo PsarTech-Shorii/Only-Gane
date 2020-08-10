@@ -2,8 +2,6 @@
 using Mirror;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 
 namespace Insight {
 	public class GameServerManager : InsightModule {

@@ -9,6 +9,7 @@ namespace Editor {
 		public static void BuildAllMenu() {
 			if (!string.IsNullOrEmpty(Settings.BuildPath)) {
 				BuildMasterServer();
+				BuildRemoteSpawner();
 				BuildGameServer();
 				BuildPlayerClient();
 			}
@@ -20,15 +21,22 @@ namespace Editor {
 				BuildMasterServer();
 			}
 		}
+		
+		[MenuItem("Tools/Build/RemoteSpawner", false, 101)]
+		public static void BuildRemoteSpawnerMenu() {
+			if (!string.IsNullOrEmpty(Settings.BuildPath)) {
+				BuildRemoteSpawner();
+			}
+		}
 
-		[MenuItem("Tools/Build/GameServer", false, 101)]
+		[MenuItem("Tools/Build/GameServer", false, 102)]
 		public static void BuildGameServerMenu() {
 			if (!string.IsNullOrEmpty(Settings.BuildPath)) {
 				BuildGameServer();
 			}
 		}
 
-		[MenuItem("Tools/Build/PlayerClient", false, 102)]
+		[MenuItem("Tools/Build/PlayerClient", false, 103)]
 		public static void BuildPlayerClientMenu() {
 			if (!string.IsNullOrEmpty(Settings.BuildPath)) {
 				BuildPlayerClient();
@@ -44,10 +52,19 @@ namespace Editor {
 			                                  Settings.BuildExtension, GetBuildTarget(), ServerBuildOptions);
 		}
 
+		private static void BuildRemoteSpawner() {
+			string[] scenes = {
+				Settings.ScenesRoot + "RemoteSpawner.unity"
+			};
+			PlayerSettings.productName = "RemoteSpawner";
+			BuildPipeline.BuildPlayer(scenes, Settings.BuildPath + "RemoteSpawner/RemoteSpawner" + 
+			                                  Settings.BuildExtension, GetBuildTarget(), ServerBuildOptions);
+		}
+
 		private static void BuildGameServer() {
 			string[] gameServerScenes = {
 				Settings.ScenesRoot + "GameServer.unity",
-				Settings.ScenesRoot + "GameBase.unity"
+				Settings.ScenesRoot + "Game.unity"
 			};
 			PlayerSettings.productName = "GameServer";
 			BuildPipeline.BuildPlayer(gameServerScenes, Settings.BuildPath + "GameServer/GameServer" + 
@@ -58,7 +75,7 @@ namespace Editor {
 			string[] scenes = {
 				Settings.ScenesRoot + "PlayerClient.unity",
 				Settings.ScenesRoot + "Lobby.unity",
-				Settings.ScenesRoot + "GameBase.unity",
+				Settings.ScenesRoot + "Game.unity",
 				Settings.ScenesRoot + "GameGUI.unity"
 			};
 			PlayerSettings.productName = "PlayerClient";
